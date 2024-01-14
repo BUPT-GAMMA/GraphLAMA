@@ -1,0 +1,2780 @@
+[
+    {
+        "id": "cora_test_7678",
+        "node_idx": 7678,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_7722",
+        "node_idx": 7722,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_8042",
+        "node_idx": 8042,
+        "res": [
+            "artificial intelligence, robotics"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8066",
+        "node_idx": 8066,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8455",
+        "node_idx": 8455,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_8476",
+        "node_idx": 8476,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8488",
+        "node_idx": 8488,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_8501",
+        "node_idx": 8501,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_8532",
+        "node_idx": 8532,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_8604",
+        "node_idx": 8604,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8652",
+        "node_idx": 8652,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_8661",
+        "node_idx": 8661,
+        "res": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "almost common": [
+            "artificial intelligence"
+        ]
+    },
+    {
+        "id": "cora_test_8676",
+        "node_idx": 8676,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8761",
+        "node_idx": 8761,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_8778",
+        "node_idx": 8778,
+        "res": [
+            "programming, logic"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8811",
+        "node_idx": 8811,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8854",
+        "node_idx": 8854,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8867",
+        "node_idx": 8867,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8917",
+        "node_idx": 8917,
+        "res": [
+            "operating systems, distributed"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": [
+            "operating systems"
+        ]
+    },
+    {
+        "id": "cora_test_8940",
+        "node_idx": 8940,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8964",
+        "node_idx": 8964,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_8975",
+        "node_idx": 8975,
+        "res": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9100",
+        "node_idx": 9100,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9102",
+        "node_idx": 9102,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9159",
+        "node_idx": 9159,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9161",
+        "node_idx": 9161,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_9206",
+        "node_idx": 9206,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9404",
+        "node_idx": 9404,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9413",
+        "node_idx": 9413,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9447",
+        "node_idx": 9447,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9564",
+        "node_idx": 9564,
+        "res": [
+            "operating systems, distributed"
+        ],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": [
+            "operating systems"
+        ]
+    },
+    {
+        "id": "cora_test_9621",
+        "node_idx": 9621,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9737",
+        "node_idx": 9737,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9849",
+        "node_idx": 9849,
+        "res": [],
+        "label": [
+            "operating systems, memory management"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_9959",
+        "node_idx": 9959,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_10042",
+        "node_idx": 10042,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_10172",
+        "node_idx": 10172,
+        "res": [
+            "programming, object oriented"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_10966",
+        "node_idx": 10966,
+        "res": [
+            "operating systems, memory management"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": [
+            "operating systems"
+        ]
+    },
+    {
+        "id": "cora_test_11640",
+        "node_idx": 11640,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [
+            "programming, compiler design"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_11868",
+        "node_idx": 11868,
+        "res": [
+            "artificial intelligence, planning"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [
+            "artificial intelligence, planning"
+        ],
+        "almost common": [
+            "artificial intelligence"
+        ]
+    },
+    {
+        "id": "cora_test_11918",
+        "node_idx": 11918,
+        "res": [
+            "artificial intelligence, robotics"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [
+            "artificial intelligence, robotics"
+        ],
+        "almost common": [
+            "artificial intelligence"
+        ]
+    },
+    {
+        "id": "cora_test_12053",
+        "node_idx": 12053,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12180",
+        "node_idx": 12180,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [
+            "programming, compiler design"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_12197",
+        "node_idx": 12197,
+        "res": [
+            "programming, object oriented"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_12291",
+        "node_idx": 12291,
+        "res": [
+            "artificial intelligence, machine learning, theory",
+            "artificial intelligence, vision and pattern recognition"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence"
+        ]
+    },
+    {
+        "id": "cora_test_12431",
+        "node_idx": 12431,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12453",
+        "node_idx": 12453,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_12465",
+        "node_idx": 12465,
+        "res": [
+            "programming, logic"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12473",
+        "node_idx": 12473,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_12474",
+        "node_idx": 12474,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_12534",
+        "node_idx": 12534,
+        "res": [
+            "artificial intelligence, agents"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12536",
+        "node_idx": 12536,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [
+            "programming, compiler design"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_12672",
+        "node_idx": 12672,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12777",
+        "node_idx": 12777,
+        "res": [
+            "operating systems, realtime"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12819",
+        "node_idx": 12819,
+        "res": [
+            "artificial intelligence, agents"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12828",
+        "node_idx": 12828,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_12833",
+        "node_idx": 12833,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_12835",
+        "node_idx": 12835,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12836",
+        "node_idx": 12836,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_12844",
+        "node_idx": 12844,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12856",
+        "node_idx": 12856,
+        "res": [],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12862",
+        "node_idx": 12862,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12882",
+        "node_idx": 12882,
+        "res": [
+            "operating systems, realtime"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12908",
+        "node_idx": 12908,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_12956",
+        "node_idx": 12956,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_13247",
+        "node_idx": 13247,
+        "res": [
+            "operating systems, memory management"
+        ],
+        "label": [
+            "operating systems, distributed"
+        ],
+        "common": [],
+        "almost common": [
+            "operating systems"
+        ]
+    },
+    {
+        "id": "cora_test_13450",
+        "node_idx": 13450,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13461",
+        "node_idx": 13461,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13471",
+        "node_idx": 13471,
+        "res": [
+            "artificial intelligence, robotics"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [
+            "artificial intelligence, robotics"
+        ],
+        "almost common": [
+            "artificial intelligence"
+        ]
+    },
+    {
+        "id": "cora_test_13555",
+        "node_idx": 13555,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13577",
+        "node_idx": 13577,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13631",
+        "node_idx": 13631,
+        "res": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13719",
+        "node_idx": 13719,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [
+            "programming, compiler design"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_13720",
+        "node_idx": 13720,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [
+            "programming, compiler design"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_13730",
+        "node_idx": 13730,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [
+            "programming, compiler design"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_13811",
+        "node_idx": 13811,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, compiler design"
+        ],
+        "common": [
+            "programming, compiler design"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_13863",
+        "node_idx": 13863,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13872",
+        "node_idx": 13872,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13982",
+        "node_idx": 13982,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_13998",
+        "node_idx": 13998,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms",
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning",
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_14017",
+        "node_idx": 14017,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14020",
+        "node_idx": 14020,
+        "res": [
+            "artificial intelligence, agents"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14196",
+        "node_idx": 14196,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [
+            "networking, protocols"
+        ],
+        "almost common": [
+            "networking"
+        ]
+    },
+    {
+        "id": "cora_test_14210",
+        "node_idx": 14210,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14236",
+        "node_idx": 14236,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14331",
+        "node_idx": 14331,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14356",
+        "node_idx": 14356,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, planning"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14489",
+        "node_idx": 14489,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14517",
+        "node_idx": 14517,
+        "res": [
+            "programming, logic"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_14551",
+        "node_idx": 14551,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [
+            "networking, protocols"
+        ],
+        "almost common": [
+            "networking"
+        ]
+    },
+    {
+        "id": "cora_test_14860",
+        "node_idx": 14860,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [
+            "networking, protocols"
+        ],
+        "almost common": [
+            "networking"
+        ]
+    },
+    {
+        "id": "cora_test_15223",
+        "node_idx": 15223,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [
+            "programming, software development"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_15333",
+        "node_idx": 15333,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15377",
+        "node_idx": 15377,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15383",
+        "node_idx": 15383,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15480",
+        "node_idx": 15480,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15496",
+        "node_idx": 15496,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_15547",
+        "node_idx": 15547,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, robotics"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15660",
+        "node_idx": 15660,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15662",
+        "node_idx": 15662,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15688",
+        "node_idx": 15688,
+        "res": [
+            "artificial intelligence, agents"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_15707",
+        "node_idx": 15707,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [
+            "networking, protocols"
+        ],
+        "almost common": [
+            "networking"
+        ]
+    },
+    {
+        "id": "cora_test_15866",
+        "node_idx": 15866,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [
+            "networking, protocols"
+        ],
+        "almost common": [
+            "networking"
+        ]
+    },
+    {
+        "id": "cora_test_15879",
+        "node_idx": 15879,
+        "res": [
+            "programming, object oriented"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16019",
+        "node_idx": 16019,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16458",
+        "node_idx": 16458,
+        "res": [],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16518",
+        "node_idx": 16518,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16551",
+        "node_idx": 16551,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16573",
+        "node_idx": 16573,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16594",
+        "node_idx": 16594,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods",
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16620",
+        "node_idx": 16620,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16630",
+        "node_idx": 16630,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16650",
+        "node_idx": 16650,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16674",
+        "node_idx": 16674,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16684",
+        "node_idx": 16684,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16769",
+        "node_idx": 16769,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16813",
+        "node_idx": 16813,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_16816",
+        "node_idx": 16816,
+        "res": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16852",
+        "node_idx": 16852,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_16865",
+        "node_idx": 16865,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, agents"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_16970",
+        "node_idx": 16970,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17049",
+        "node_idx": 17049,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17082",
+        "node_idx": 17082,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "programming, software development"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17085",
+        "node_idx": 17085,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17124",
+        "node_idx": 17124,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17126",
+        "node_idx": 17126,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17247",
+        "node_idx": 17247,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17261",
+        "node_idx": 17261,
+        "res": [
+            "artificial intelligence, machine learning, neural networks",
+            "artificial intelligence, machine learning, theory",
+            "operating systems, realtime",
+            "programming, software development"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17288",
+        "node_idx": 17288,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17317",
+        "node_idx": 17317,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [
+            "networking, protocols"
+        ],
+        "almost common": [
+            "networking"
+        ]
+    },
+    {
+        "id": "cora_test_17318",
+        "node_idx": 17318,
+        "res": [
+            "networking, protocols"
+        ],
+        "label": [
+            "networking, protocols"
+        ],
+        "common": [
+            "networking, protocols"
+        ],
+        "almost common": [
+            "networking"
+        ]
+    },
+    {
+        "id": "cora_test_17378",
+        "node_idx": 17378,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17420",
+        "node_idx": 17420,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17467",
+        "node_idx": 17467,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17470",
+        "node_idx": 17470,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17508",
+        "node_idx": 17508,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17542",
+        "node_idx": 17542,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17569",
+        "node_idx": 17569,
+        "res": [],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17613",
+        "node_idx": 17613,
+        "res": [
+            "operating systems, distributed"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": [
+            "operating systems"
+        ]
+    },
+    {
+        "id": "cora_test_17659",
+        "node_idx": 17659,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17713",
+        "node_idx": 17713,
+        "res": [
+            "programming, object oriented"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17734",
+        "node_idx": 17734,
+        "res": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "almost common": [
+            "human computer interaction"
+        ]
+    },
+    {
+        "id": "cora_test_17740",
+        "node_idx": 17740,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17825",
+        "node_idx": 17825,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_17865",
+        "node_idx": 17865,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_17919",
+        "node_idx": 17919,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_18154",
+        "node_idx": 18154,
+        "res": [
+            "artificial intelligence, robotics"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18156",
+        "node_idx": 18156,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18161",
+        "node_idx": 18161,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_18222",
+        "node_idx": 18222,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18336",
+        "node_idx": 18336,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18363",
+        "node_idx": 18363,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "encryption and compression, encryption"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18383",
+        "node_idx": 18383,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_18391",
+        "node_idx": 18391,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_18408",
+        "node_idx": 18408,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_18419",
+        "node_idx": 18419,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_18519",
+        "node_idx": 18519,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods",
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18524",
+        "node_idx": 18524,
+        "res": [
+            "encryption and compression, encryption"
+        ],
+        "label": [
+            "human computer interaction, graphics and virtual reality"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18535",
+        "node_idx": 18535,
+        "res": [
+            "programming, logic"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_18920",
+        "node_idx": 18920,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_19004",
+        "node_idx": 19004,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_19150",
+        "node_idx": 19150,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_19169",
+        "node_idx": 19169,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_19332",
+        "node_idx": 19332,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_19345",
+        "node_idx": 19345,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_19375",
+        "node_idx": 19375,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_19489",
+        "node_idx": 19489,
+        "res": [
+            "artificial intelligence, machine learning, neural networks"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_19506",
+        "node_idx": 19506,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "operating systems, realtime"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_19643",
+        "node_idx": 19643,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_19866",
+        "node_idx": 19866,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_20066",
+        "node_idx": 20066,
+        "res": [
+            "artificial intelligence, machine learning, neural networks",
+            "artificial intelligence, machine learning, theory",
+            "operating systems, distributed",
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_20088",
+        "node_idx": 20088,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_20100",
+        "node_idx": 20100,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_20181",
+        "node_idx": 20181,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_20269",
+        "node_idx": 20269,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_20314",
+        "node_idx": 20314,
+        "res": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_20316",
+        "node_idx": 20316,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, genetic algorithms"
+        ],
+        "common": [],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_20337",
+        "node_idx": 20337,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_20371",
+        "node_idx": 20371,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "common": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "almost common": [
+            "artificial intelligence, machine learning"
+        ]
+    },
+    {
+        "id": "cora_test_20379",
+        "node_idx": 20379,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_20393",
+        "node_idx": 20393,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_20415",
+        "node_idx": 20415,
+        "res": [
+            "artificial intelligence, machine learning, case-based",
+            "operating systems, distributed"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_20821",
+        "node_idx": 20821,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_20929",
+        "node_idx": 20929,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21078",
+        "node_idx": 21078,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "artificial intelligence, games and search"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21105",
+        "node_idx": 21105,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21153",
+        "node_idx": 21153,
+        "res": [
+            "programming, logic"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [
+            "programming, logic"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_21161",
+        "node_idx": 21161,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_21336",
+        "node_idx": 21336,
+        "res": [
+            "artificial intelligence, agents",
+            "artificial intelligence, games and search",
+            "artificial intelligence, machine learning, case-based",
+            "artificial intelligence, machine learning, neural networks",
+            "artificial intelligence, machine learning, probabilistic methods",
+            "artificial intelligence, machine learning, theory",
+            "artificial intelligence, planning",
+            "artificial intelligence, robotics",
+            "artificial intelligence, speech",
+            "encryption and compression, encryption",
+            "networking, protocols",
+            "operating systems, distributed",
+            "operating systems, realtime",
+            "programming, logic",
+            "programming, software development"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [
+            "programming, logic"
+        ],
+        "almost common": [
+            "programming",
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_21422",
+        "node_idx": 21422,
+        "res": [],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21464",
+        "node_idx": 21464,
+        "res": [
+            "artificial intelligence, machine learning, neural networks",
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21487",
+        "node_idx": 21487,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21499",
+        "node_idx": 21499,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21717",
+        "node_idx": 21717,
+        "res": [
+            "programming, logic"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_21850",
+        "node_idx": 21850,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21883",
+        "node_idx": 21883,
+        "res": [
+            "operating systems, memory management"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_21951",
+        "node_idx": 21951,
+        "res": [
+            "programming, object oriented"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [
+            "programming, object oriented"
+        ],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_22309",
+        "node_idx": 22309,
+        "res": [
+            "artificial intelligence, speech"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [
+            "artificial intelligence, speech"
+        ],
+        "almost common": [
+            "artificial intelligence"
+        ]
+    },
+    {
+        "id": "cora_test_22332",
+        "node_idx": 22332,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_22354",
+        "node_idx": 22354,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_22471",
+        "node_idx": 22471,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_22487",
+        "node_idx": 22487,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_22488",
+        "node_idx": 22488,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_24196",
+        "node_idx": 24196,
+        "res": [
+            "programming, compiler design"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_24242",
+        "node_idx": 24242,
+        "res": [
+            "artificial intelligence, machine learning, theory"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_24250",
+        "node_idx": 24250,
+        "res": [
+            "artificial intelligence, speech"
+        ],
+        "label": [
+            "artificial intelligence, speech"
+        ],
+        "common": [
+            "artificial intelligence, speech"
+        ],
+        "almost common": [
+            "artificial intelligence"
+        ]
+    },
+    {
+        "id": "cora_test_24293",
+        "node_idx": 24293,
+        "res": [
+            "programming, software development"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": [
+            "programming"
+        ]
+    },
+    {
+        "id": "cora_test_24324",
+        "node_idx": 24324,
+        "res": [
+            "artificial intelligence, machine learning, probabilistic methods"
+        ],
+        "label": [
+            "programming, logic"
+        ],
+        "common": [],
+        "almost common": []
+    },
+    {
+        "id": "cora_test_24425",
+        "node_idx": 24425,
+        "res": [
+            "artificial intelligence, machine learning, case-based"
+        ],
+        "label": [
+            "programming, object oriented"
+        ],
+        "common": [],
+        "almost common": []
+    }
+]
