@@ -254,6 +254,7 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
     disable_torch_init()
     # model_name = os.path.expanduser(args.model_name)
     print('start loading')
+    # tokenizer = AutoTokenizer.from_pretrained("/home/cjz/checkpoints/few-shot-prompt")
     tokenizer = AutoTokenizer.from_pretrained(args.model_name)
     print('finish loading')
 
@@ -276,6 +277,7 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         prompt_linear.load_state_dict(linear_dict)
         model.get_model().prompt_weight = Parameter(prompt_dict['model.prompt_weight'].cuda())
         model.get_model().prompt_weight.to(device='cuda', dtype=torch.float16)
+        prompt_linear =  prompt_linear.half()
         model.get_model().prompt_linear = prompt_linear.cuda()
         
 
@@ -410,10 +412,17 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
 
         res_data.append({"id": instruct_item["id"], "node_idx": instruct_item["graph"]["node_idx"], "res": res,
                          'label': label, 'common': list(common), 'almost common': almost_common, 'rag label': rag_label}.copy())
-        with open(osp.join(args.output_res_path, 'arxiv_test_res_{}_{}_with_rag.json'.format(start_idx, end_idx)), "w") as fout:
-            json.dump(res_data, fout, indent=4)
+        # with open(osp.join(args.output_res_path, 'arxiv_test_res_{}_{}_with_prompt.json'.format(start_idx, end_idx)), "w") as fout:
+        #     json.dump(res_data, fout, indent=4)
     print('acc = ', correct/len(prompt_file))
     print('almost correct answer: ', almost_correct)
+    lead_dict = {
+        'acc': correct/len(prompt_file),
+        'almost_correct': almost_correct,
+    }
+    res_data.insert(0, lead_dict)
+    with open(osp.join(args.output_res_path, 'arxiv_test_res_{}_{}_with_prompt.json'.format(start_idx, end_idx)), "w") as fout:
+        json.dump(res_data, fout, indent=4)
     return res_data
     # with open(args.output_res_path, "w") as fout:
     #     json.dump(res_data, fout, indent=4)

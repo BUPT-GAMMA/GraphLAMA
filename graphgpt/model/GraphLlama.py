@@ -224,7 +224,7 @@ class GraphLlamaModel(LlamaModel):
                     for g in graph_data:
                         # print(g)
                         node_forward_out = graph_tower(g)
-                        self.prompt_linear.half()
+                        # self.prompt_linear.half()
                         node_forward_out = self.prompt_linear(node_forward_out)
                         node_count = node_forward_out.size(0)
                         current_weight = self.prompt_weight[:node_count, :]
@@ -383,7 +383,7 @@ class GraphLlamaForCausalLM(LlamaForCausalLM):
             # Enable model/pipeline parallelism
             shift_labels = shift_labels.to(shift_logits.device)
             loss = loss_fct(shift_logits, shift_labels)
-            print(loss)
+            # print(loss)
 
         if not return_dict:
             output = (logits,) + outputs[1:]
@@ -460,10 +460,11 @@ class GraphLlamaForCausalLM(LlamaForCausalLM):
                     p.requires_grad = False # 输出的词汇embedding不可训练
                     
             # if use_graph_prompt:
-            #     for p in self.get_input_embeddings().parameters():
-            #         p.requires_grad = False # 输入的词汇embedding不可训练
-            #     for p in self.get_output_embeddings().parameters():
-            #         p.requires_grad = False # 输出的词汇embedding不可训练
+                # self.get_model().orig_embeds_params = [self.get_input_embeddings().weight.data.clone().to(device=device)]
+                # for p in self.get_input_embeddings().parameters():
+                #     p.requires_grad = True # 输入的词汇embedding不可训练
+                # for p in self.get_output_embeddings().parameters():
+                #     p.requires_grad = True # 输出的词汇embedding不可训练
             
             if pretrain_graph_mlp_adapter:
                 mm_projector_weights = torch.load(pretrain_graph_mlp_adapter, map_location='cpu')

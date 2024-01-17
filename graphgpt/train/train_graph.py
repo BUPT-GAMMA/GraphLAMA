@@ -34,6 +34,7 @@ from graphgpt.model import *
 from PIL import Image
 import torch.nn as nn
 from torch_geometric.data import Data
+from torch.nn.parameter import Parameter
 
 # TODO: import and use code from ../data/dataset.py
 
@@ -60,7 +61,7 @@ class ModelArguments:
     pretrain_graph_mlp_adapter: Optional[str] = field(default=None)
     use_graph_start_end: bool = field(default=False)
     use_graph_prompt: bool = field(default=False)
-    tuned_graph_prompt: Optional[str] = field(default=None)
+    # tuned_graph_prompt: Optional[str] = field(default=None)
 
 
 @dataclass
@@ -878,6 +879,17 @@ def train():
         # data_args.graph_token_len = model_graph_dict['graph_token_len']
         # data_args.graph_processor = model_graph_dict['graph_processor']
         data_args.is_graph = True
+        
+        # prompt_dict = torch.load("/home/cjz/GraphGPT/checkpoints/few-shot-prompt/tuned_graph_prompt.bin")
+        # linear_dict = {
+        #     'weight': prompt_dict['model.prompt_linear.weight'].half(),
+        #     'bias': prompt_dict['model.prompt_linear.bias'].half()
+        # }
+        # prompt_linear = torch.nn.Linear(128, 128)
+        # prompt_linear.load_state_dict(linear_dict)
+        # model.get_model().prompt_weight = Parameter(prompt_dict['model.prompt_weight'].cuda())
+        # model.get_model().prompt_weight.to(device='cuda', dtype=torch.float16)
+        # model.get_model().prompt_linear = prompt_linear.cuda()
 
         model.config.tune_graph_mlp_adapter = training_args.tune_graph_mlp_adapter = model_args.tune_graph_mlp_adapter
         model.requires_grad_(False)
