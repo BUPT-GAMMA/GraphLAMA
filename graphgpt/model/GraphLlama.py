@@ -114,7 +114,7 @@ class GraphLlamaModel(LlamaModel):
         
         if hasattr(config, "use_graph_prompt"):
             self.prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
-            self.prompt_weight = torch.nn.Parameter(torch.Tensor(100, config.graph_hidden_size))
+            self.prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
             self.reset_parameters()
             
     def reset_parameters(self):
@@ -179,7 +179,7 @@ class GraphLlamaModel(LlamaModel):
             
         if not hasattr(self, 'prompt_linear'):
             self.prompt_linear = nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
-            self.prompt_weight = torch.nn.Parameter(torch.Tensor(100, self.config.graph_hidden_size))
+            self.prompt_weight = torch.nn.Parameter(torch.Tensor(500, self.config.graph_hidden_size))
             self.reset_parameters()
 
         if pretrain_graph_mlp_adapter is not None:
@@ -445,19 +445,19 @@ class GraphLlamaForCausalLM(LlamaForCausalLM):
                 input_embeddings[-num_new_tokens:] = input_embeddings_avg
                 output_embeddings[-num_new_tokens:] = output_embeddings_avg
 
-            if tune_graph_mlp_adapter:
-                self.get_model().orig_embeds_params = [self.get_input_embeddings().weight.data.clone().to(device=device)]
+            if tune_graph_mlp_adapter or tune_graph_tower or use_graph_prompt:
+                # self.get_model().orig_embeds_params = [self.get_input_embeddings().weight.data.clone().to(device=device)]
                 for p in self.get_input_embeddings().parameters():
                     p.requires_grad = True # 输入的词汇embedding可被训练
                 for p in self.get_output_embeddings().parameters():
-                    p.requires_grad = False # 输出的词汇embedding不变，意味着输出时不会包括新词汇
+                    p.requires_grad = True # 输出的词汇embedding不变，意味着输出时不会包括新词汇
             
-            if tune_graph_tower:
-                # self.get_model().orig_embeds_params = [self.get_input_embeddings().weight.data.clone().to(device=device)]
-                for p in self.get_input_embeddings().parameters():
-                    p.requires_grad = False # 输入的词汇embedding不可训练
-                for p in self.get_output_embeddings().parameters():
-                    p.requires_grad = False # 输出的词汇embedding不可训练
+            # if tune_graph_tower:
+            #     # self.get_model().orig_embeds_params = [self.get_input_embeddings().weight.data.clone().to(device=device)]
+            #     for p in self.get_input_embeddings().parameters():
+            #         p.requires_grad = False # 输入的词汇embedding不可训练
+            #     for p in self.get_output_embeddings().parameters():
+            #         p.requires_grad = False # 输出的词汇embedding不可训练
                     
             # if use_graph_prompt:
                 # self.get_model().orig_embeds_params = [self.get_input_embeddings().weight.data.clone().to(device=device)]

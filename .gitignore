@@ -1,0 +1,6 @@
+scripts/tune_script/wandb/
+/checkpoints
+
+# 忽略 Python 编译文件
+__pycache__/
+*.pyc
