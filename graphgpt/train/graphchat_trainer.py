@@ -69,7 +69,30 @@ class GraphChatTrainer(Trainer):
             else:
                 torch.save(weight_to_save, os.path.join(output_dir, f'tuned_graph_tower.bin'))
         
-        if getattr(self.args, 'tune_graph_prompt', True):
+        if getattr(self.args, 'combined_graph_prompt', True):
+            # Save the model
+            _state_dict = state_dict
+            if _state_dict is None:
+                # Only save the model itself if we are using distributed training
+                model_to_save = unwrap_model(self.model)
+                _state_dict = model_to_save.state_dict()
+
+            weight_to_save = {}
+            keys_to_match = ['prompt', 'alpha']
+            for k, v in _state_dict.items():
+                if any(key_match in k for key_match in keys_to_match):
+                    weight_to_save[k] = v
+
+            current_folder = output_dir.split('/')[-1]
+            parent_folder = os.path.dirname(output_dir)
+            if current_folder.startswith('checkpoint-'):
+                mm_projector_folder = os.path.join(parent_folder, "combined_graph_prompt")
+                os.makedirs(mm_projector_folder, exist_ok=True)
+                torch.save(weight_to_save, os.path.join(mm_projector_folder, f'{current_folder}.bin'))
+            else:
+                torch.save(weight_to_save, os.path.join(output_dir, f'combined_graph_prompt.bin'))
+        
+        elif getattr(self.args, 'tune_graph_prompt', True):
             # Save the model
             _state_dict = state_dict
             if _state_dict is None:

@@ -19,6 +19,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch.nn import CrossEntropyLoss
+from torch.nn.parameter import Parameter
 
 from transformers import AutoConfig, AutoModelForCausalLM, \
                          LlamaConfig, LlamaModel, LlamaForCausalLM, \
@@ -112,14 +113,32 @@ class GraphLlamaModel(LlamaModel):
         if hasattr(config, "use_graph_proj"):
             self.graph_projector = nn.Linear(config.graph_hidden_size, config.hidden_size)
         
-        if hasattr(config, "use_graph_prompt"):
-            self.prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
-            self.prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
-            self.reset_parameters()
+        if hasattr(config, 'use_graph_prompt'):    
+            if getattr(config, "combined_graph_prompt", True):
+                self.new_prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
+                self.new_prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
+                self.frozen_prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
+                self.frozen_prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
+                self.alpha_linear = Parameter(torch.tensor(0.5))  
+                self.alpha_weight = Parameter(torch.tensor(0.5))
+                self.combined_graph_prompt = True
+                
             
-    def reset_parameters(self):
-        torch.nn.init.xavier_uniform_(self.prompt_linear.weight)
-        torch.nn.init.xavier_uniform_(self.prompt_weight)
+            elif getattr(config, "use_graph_prompt", True):
+                self.prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
+                self.prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
+                self.reset_parameters(['prompt'])
+            
+    def reset_parameters(self, components_to_reset):
+        if 'prompt' in components_to_reset:
+            torch.nn.init.xavier_uniform_(self.prompt_linear.weight)
+            torch.nn.init.xavier_uniform_(self.prompt_weight)
+        if 'new_prompt' in components_to_reset:
+            torch.nn.init.xavier_uniform_(self.new_prompt_linear.weight)
+            torch.nn.init.xavier_uniform_(self.new_prompt_weight)
+        if 'frozen_prompt' in components_to_reset:
+            torch.nn.init.xavier_uniform_(self.frozen_prompt_linear.weight)
+            torch.nn.init.xavier_uniform_(self.frozen_prompt_weight)
 
     def get_graph_tower(self):
         graph_tower = getattr(self, 'graph_tower', None)
@@ -128,8 +147,10 @@ class GraphLlamaModel(LlamaModel):
         return graph_tower
 
     def initialize_graph_modules(self, graph_tower, graph_select_layer,
-                                  pretrain_graph_mlp_adapter=None, fsdp=None): # TODO: modify this function
+                                  pretrain_graph_mlp_adapter=None, pretrain_graph_prompt=None,
+                                  pretrain_graph_tower=None, fsdp=None, combined_graph_prompt=False): # TODO: modify this function
         self.config.graph_tower = graph_tower
+        self.combined_graph_prompt = combined_graph_prompt
 
 
         if not hasattr(self, 'graph_tower'):
@@ -140,12 +161,24 @@ class GraphLlamaModel(LlamaModel):
             elif "clip_gcn_arxiv" in self.config.graph_tower:
                 clip_graph, args= load_model_pretrained(CLIP, self.config.pretrain_graph_model_path)
                 graph_tower = GNN(args)
-                graph_tower = transfer_param_tograph(clip_graph, graph_tower)
+                if pretrain_graph_tower is None:
+                    graph_tower = transfer_param_tograph(clip_graph, graph_tower)
+                else:
+                    graph_tower_dict = torch.load(pretrain_graph_tower)
+                    new_keys = [k.replace('model.graph_tower.', '') for k in graph_tower_dict.keys()]
+                    modified_dict = dict(zip(new_keys, graph_tower_dict.values()))
+                    graph_tower.load_state_dict(modified_dict)
             # elif self.config.graph_tower == "clip_gt":
             elif "clip_gt" in self.config.graph_tower:
                 clip_graph, args= load_model_pretrained(CLIP, self.config.pretrain_graph_model_path) 
                 graph_tower = graph_transformer(args)
-                graph_tower = transfer_param_tograph(clip_graph, graph_tower)
+                if pretrain_graph_tower is None:
+                    graph_tower = transfer_param_tograph(clip_graph, graph_tower)
+                else:
+                    graph_tower_dict = torch.load(pretrain_graph_tower)
+                    new_keys = [k.replace('model.graph_tower.', '') for k in graph_tower_dict.keys()]
+                    modified_dict = dict(zip(new_keys, graph_tower_dict.values()))
+                    graph_tower.load_state_dict(modified_dict)
             # # graph_tower = MPNN(in_channels = self.config.graph_hidden_size, hidden_channels = self.config.graph_hidden_size * 2, out_channels = self.config.graph_hidden_size, dropout = 0.1, num_layers = 2)
             # # elif self.config.graph_tower == "clip_gt_arxiv":
             # elif "clip_gt_arxiv" in self.config.graph_tower:
@@ -159,7 +192,7 @@ class GraphLlamaModel(LlamaModel):
             #     graph_tower = transfer_param_tograph(clip_graph, graph_tower)
         else:
             graph_tower = self.graph_tower
-        graph_tower.requires_grad_(False)
+        # graph_tower.requires_grad_(False)
 
         if fsdp is not None and len(fsdp) > 0:
             self.graph_tower = [graph_tower]
@@ -177,14 +210,59 @@ class GraphLlamaModel(LlamaModel):
             print("graph_hidden_size:" + str(self.config.graph_hidden_size))
             self.graph_projector = nn.Linear(self.config.graph_hidden_size, self.config.hidden_size)
             
-        if not hasattr(self, 'prompt_linear'):
+        if not hasattr(self, 'prompt_linear') and combined_graph_prompt == False:
             self.prompt_linear = nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
             self.prompt_weight = torch.nn.Parameter(torch.Tensor(500, self.config.graph_hidden_size))
-            self.reset_parameters()
+            self.reset_parameters(['prompt'])
 
         if pretrain_graph_mlp_adapter is not None:
             graph_projector_weights = torch.load(pretrain_graph_mlp_adapter, map_location='cpu')
             self.graph_projector.load_state_dict({k.split('.')[-1]: v for k, v in graph_projector_weights.items()})
+            
+        if combined_graph_prompt == True and pretrain_graph_prompt is not None:
+            # 1. 重新初始化模块
+            self.new_prompt_linear = nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
+            self.new_prompt_weight = torch.nn.Parameter(torch.Tensor(500, self.config.graph_hidden_size))
+            self.reset_parameters(['new_prompt'])
+
+            # 2. 加载模块并冻结
+            prompt_dict = torch.load(pretrain_graph_prompt)
+            frozen_linear_weight = prompt_dict['model.frozen_prompt_linear.weight'].half().cuda()
+            frozen_linear_bias = prompt_dict['model.frozen_prompt_linear.bias'].half().cuda()
+            self.frozen_prompt_linear = nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
+            self.frozen_prompt_linear.weight = Parameter(frozen_linear_weight, requires_grad=False)
+            self.frozen_prompt_linear.bias = Parameter(frozen_linear_bias, requires_grad=False)
+
+            frozen_prompt_weight = prompt_dict['model.frozen_prompt_weight'].cuda().half()
+            self.frozen_prompt_weight = Parameter(frozen_prompt_weight, requires_grad=False)
+
+            # 3. 可训练的权重参数
+            self.alpha_linear = Parameter(prompt_dict['model.alpha_linear'])
+            self.alpha_linear.to(device='cuda', dtype=torch.float16)
+            self.alpha_weight = Parameter(prompt_dict['model.alpha_weight'])
+            self.alpha_weight.to(device='cuda', dtype=torch.float16)  
+        
+        elif combined_graph_prompt == True and pretrain_graph_prompt is None:
+            self.new_prompt_linear = nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
+            self.new_prompt_weight = torch.nn.Parameter(torch.Tensor(500, self.config.graph_hidden_size))
+            self.frozen_prompt_linear = nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
+            self.frozen_prompt_weight = torch.nn.Parameter(torch.Tensor(500, self.config.graph_hidden_size))
+            self.reset_parameters(['new_prompt', 'frozen_prompt'])
+            self.alpha_linear = Parameter(torch.tensor(0.5))  # 初始化为0.5，可训练
+            self.alpha_weight = Parameter(torch.tensor(0.5))  # 初始化为0.5，可训练
+            
+        elif combined_graph_prompt == False and pretrain_graph_prompt is not None:
+            prompt_dict = torch.load(pretrain_graph_prompt)
+            linear_dict = {
+                'weight': prompt_dict['model.prompt_linear.weight'].half(),
+                'bias': prompt_dict['model.prompt_linear.bias'].half()
+            }
+            prompt_linear = torch.nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
+            prompt_linear.load_state_dict(linear_dict)
+            self.prompt_weight = Parameter(prompt_dict['model.prompt_weight'].cuda())
+            self.prompt_weight.to(device='cuda', dtype=torch.float16)
+            self.prompt_linear = prompt_linear
+            self.prompt_linear.to(device='cuda', dtype=torch.float16)
 
     def forward(
         self,
@@ -212,7 +290,7 @@ class GraphLlamaModel(LlamaModel):
             inputs_embeds = self.embed_tokens(input_ids)
 
         graph_tower = self.get_graph_tower()
-        if graph_tower is not None and (input_ids.shape[1] != 1 or self.training) and graph_data is not None:
+        if (graph_tower is not None or graph_data is not None) and (input_ids.shape[1] != 1 or self.training):
             # TODO: this is a modified multimodal LLM -- Haotian Liu
             # with torch.no_grad():
             if type(graph_data[0]) is list:
@@ -224,11 +302,17 @@ class GraphLlamaModel(LlamaModel):
                     for g in graph_data:
                         # print(g)
                         node_forward_out = graph_tower(g)
-                        # self.prompt_linear.half()
-                        node_forward_out = self.prompt_linear(node_forward_out)
                         node_count = node_forward_out.size(0)
-                        current_weight = self.prompt_weight[:node_count, :]
-                        node_forward_out = node_forward_out * current_weight
+                        if hasattr(self, 'combined_graph_prompt') and self.combined_graph_prompt is False: 
+                            # self.prompt_linear.half()
+                            node_forward_out = self.prompt_linear(node_forward_out)
+                            current_weight = self.prompt_weight[:node_count, :]
+                            node_forward_out = node_forward_out * current_weight
+                        else:
+                            node_forward_out = self.alpha_linear * self.new_prompt_linear(node_forward_out) + (1 - self.alpha_linear) * self.frozen_prompt_linear(node_forward_out)
+                            combined_weight = self.alpha_weight * self.new_prompt_weight + (1 - self.alpha_weight) * self.frozen_prompt_weight
+                            current_weight = combined_weight[:node_count, :]
+                            node_forward_out = node_forward_out * current_weight
                         graph_node_features.append(node_forward_out)
                 elif type(graph_data[0]) is dict:
                     for g_dict in graph_data:
@@ -236,6 +320,20 @@ class GraphLlamaModel(LlamaModel):
                         node_forward_out_2 = graph_tower(g_dict['graph_2'])
                         graph_node_features.append(node_forward_out_1)
                         graph_node_features.append(node_forward_out_2)
+                elif type(graph_data[0]) is torch.Tensor:
+                    node_forward_out = graph_data[0]
+                    node_count = node_forward_out.size(0)
+                    if self.combined_graph_prompt is False:
+                        # self.prompt_linear.half()
+                        node_forward_out = self.prompt_linear(node_forward_out)
+                        current_weight = self.prompt_weight[:node_count, :]
+                        node_forward_out = node_forward_out * current_weight
+                    else:
+                        node_forward_out = self.alpha_linear * self.new_prompt_linear(node_forward_out) + (1 - self.alpha_linear) * self.frozen_prompt_linear(node_forward_out)
+                        combined_weight = self.alpha_weight * self.new_prompt_weight + (1 - self.alpha_weight) * self.frozen_prompt_weight
+                        current_weight = combined_weight[:node_count, :]
+                        node_forward_out = node_forward_out * current_weight
+                    graph_node_features.append(node_forward_out)
             else:
                 raise ValueError(f'graph_node_reps is expected to be a list but got {type(graph_data)}')
             if type(graph_data) is list:
@@ -450,7 +548,7 @@ class GraphLlamaForCausalLM(LlamaForCausalLM):
                 for p in self.get_input_embeddings().parameters():
                     p.requires_grad = True # 输入的词汇embedding可被训练
                 for p in self.get_output_embeddings().parameters():
-                    p.requires_grad = True # 输出的词汇embedding不变，意味着输出时不会包括新词汇
+                    p.requires_grad = False # llm_head不可训练, 输出部分不会乱码的原因？  ##Changed
             
             # if tune_graph_tower:
             #     # self.get_model().orig_embeds_params = [self.get_input_embeddings().weight.data.clone().to(device=device)]
@@ -466,7 +564,7 @@ class GraphLlamaForCausalLM(LlamaForCausalLM):
                 # for p in self.get_output_embeddings().parameters():
                 #     p.requires_grad = True # 输出的词汇embedding不可训练
             
-            if pretrain_graph_mlp_adapter:
+            if pretrain_graph_mlp_adapter and num_new_tokens == 2:
                 mm_projector_weights = torch.load(pretrain_graph_mlp_adapter, map_location='cpu')
                 embed_tokens_weight = mm_projector_weights['model.embed_tokens.weight']
                 assert num_new_tokens == 2

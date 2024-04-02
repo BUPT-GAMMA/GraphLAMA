@@ -61,7 +61,9 @@ class ModelArguments:
     pretrain_graph_mlp_adapter: Optional[str] = field(default=None)
     use_graph_start_end: bool = field(default=False)
     use_graph_prompt: bool = field(default=False)
-    # tuned_graph_prompt: Optional[str] = field(default=None)
+    pretrain_graph_prompt: Optional[str] = field(default=None)
+    pretrain_graph_tower: Optional[str] = field(default=None)
+    combined_graph_prompt: bool = field(default=False)
 
 
 @dataclass
@@ -557,7 +559,12 @@ class LazySupervisedDataset(Dataset):
         self.list_data_dict = list_data_dict
         self.graph_cfg = graph_cfg
         graph_data_path = kwargs.get('graph_data_path')
-        self.graph_data_all = torch.load(graph_data_path)
+        if '.pt' in graph_data_path:
+            self.graph_data_all = torch.load(graph_data_path)
+        elif '.json' in graph_data_path:
+            with open(graph_data_path, 'r', encoding='utf-8') as file:
+                graph_repr_list = json.load(file)
+            self.graph_data_all = [torch.tensor(feature) for feature in graph_repr_list]
 
     def __len__(self):
         return len(self.list_data_dict)
@@ -569,7 +576,13 @@ class LazySupervisedDataset(Dataset):
         assert len(sources) == 1, "Don't know why it is wrapped to a list"  # FIXME
 
         task_type = self.list_data_dict[i]['id'].split("_")[-1]
-        if task_type != 'LP': 
+        mole_flag = self.list_data_dict[i]['id'].split("_")[0]
+        if mole_flag == 'molecule':
+            cur_token_len = len(self.graph_data_all[i])
+            sources = preprocess_graph(
+                copy.deepcopy([e["conversations"] for e in sources]),
+                self.graph_cfg, cur_token_len)
+        elif task_type != 'LP': 
             if 'graph' in sources[0]:
                 graph_dict = self.list_data_dict[i]['graph']
                 graph_edge_index = torch.Tensor(copy.deepcopy(graph_dict['edge_index'])).long()
@@ -614,7 +627,9 @@ class LazySupervisedDataset(Dataset):
                              labels=data_dict["labels"][0])
 
         # image exist in the data
-        if task_type != 'LP': 
+        if mole_flag == 'molecule':
+            data_dict['graph_data'] = self.graph_data_all[i]
+        elif task_type != 'LP': 
             if 'graph' in self.list_data_dict[i]:
                 # data_dict['graph_node'] = graph_node_rep
                 # data_dict['graph_edge'] = graph_edge_index
@@ -794,10 +809,8 @@ def train():
         model = GraphLlamaForCausalLM.from_pretrained(
                 model_args.model_name_or_path,
                 cache_dir=training_args.cache_dir,
-                # graph_tower='clip_gt_arxiv',
-                # pretrain_graph_model_path=model_args.graph_tower,
                 **bnb_model_from_pretrained_args
-            ) ## TODO: add real Graph Llama model 
+            ) ## TODO: add real Graph Llama model
     else:
         model = transformers.LlamaForCausalLM.from_pretrained(
             model_args.model_name_or_path,
@@ -871,6 +884,9 @@ def train():
             graph_tower=model_args.graph_tower,
             graph_select_layer=model_args.graph_select_layer,
             pretrain_graph_mlp_adapter=model_args.pretrain_graph_mlp_adapter,
+            pretrain_graph_prompt=model_args.pretrain_graph_prompt,
+            pretrain_graph_tower=model_args.pretrain_graph_tower,
+            combined_graph_prompt=model_args.combined_graph_prompt,
             fsdp=training_args.fsdp
         )
         model.get_graph_tower().to(dtype=torch.float16, device=training_args.device)
@@ -904,7 +920,24 @@ def train():
                 p.requires_grad = True
             model.get_model().graph_tower.to(dtype=compute_dtype, device=training_args.device)
             
-        if model_args.use_graph_prompt:
+        if model_args.use_graph_prompt and model_args.combined_graph_prompt:
+            for p in model.get_model().new_prompt_linear.parameters():
+                p.requires_grad = True
+            model.get_model().new_prompt_linear.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().new_prompt_weight.requires_grad = True
+            model.get_model().new_prompt_weight.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().alpha_linear.requires_grad = True
+            model.get_model().alpha_linear.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().alpha_weight.requires_grad = True
+            model.get_model().alpha_weight.to(dtype=compute_dtype, device=training_args.device)
+            if model_args.pretrain_graph_prompt is None:
+                for p in model.get_model().frozen_prompt_linear.parameters():
+                    p.requires_grad = True
+                model.get_model().frozen_prompt_linear.to(dtype=compute_dtype, device=training_args.device)
+                model.get_model().frozen_prompt_weight.requires_grad = True
+                model.get_model().frozen_prompt_weight.to(dtype=compute_dtype, device=training_args.device)
+            
+        elif model_args.use_graph_prompt:
             # model.requires_grad_(False)
             for p in model.get_model().prompt_linear.parameters():
                 p.requires_grad = True

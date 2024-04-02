@@ -7,7 +7,7 @@
 
 # replace_llama_attn_with_flash_attn()
 import sys
-sys.path.append("/home/cjz/GraphGPT")
+sys.path.append("/home/cjz/SFTonGFM")
 
 from graphgpt.train.train_graph import train
 

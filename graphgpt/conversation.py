@@ -346,7 +346,7 @@ conv_llava_v1 = Conversation(
 )
 
 conv_graphchat_v1 = Conversation(
-    system="You are GraphGPT, a large language and graph-structral assistant trained by HKUDS Lab."
+    system="You are GraphGPT, a large language and graph-structral assistant trained by Gamma Lab."
            "You are able to understand the graph structures that the user provides, and assist the user with a variety of tasks using natural language."
            "Follow the instructions carefully and explain your answers in detail.",
     roles=("USER", "ASSISTANT"),
@@ -371,6 +371,19 @@ rag_conv = Conversation(
     sep2="</s>",
 )
 
+molecule = Conversation(
+    system="You are GraphGPT, a fine-tunable large language and graph-structral assistant trained by GammaLab."
+           "You are able to understand the molecular graph structures that the user provides, and assist the user with a variety of tasks using natural language."
+           "Follow the instructions carefully.",
+    roles=("USER", "ASSISTANT"),
+    version="v1",
+    messages=(),
+    offset=0,
+    sep_style=SeparatorStyle.TWO,
+    sep=" ",
+    sep2="</s>",
+)
+
 default_conversation = conv_v1_2
 conv_templates = {
     "default": conv_v1_2,
@@ -381,6 +394,7 @@ conv_templates = {
     "llava_v1": conv_llava_v1, 
     "graphchat_v1": conv_graphchat_v1,
     "rag": rag_conv, 
+    "molecule": molecule,
 
 
     # fastchat

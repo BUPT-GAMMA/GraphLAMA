@@ -14,12 +14,12 @@ import copy
 import numpy as np
 import faiss
 from torch.nn.parameter import Parameter
-import time
-
+import re
 import os
 import requests
 from PIL import Image
 from io import BytesIO
+import time
 
 from tqdm import tqdm
 import json
@@ -34,102 +34,29 @@ DEFAULT_GRAPH_PATCH_TOKEN = "<g_patch>"
 DEFAULT_G_START_TOKEN = "<g_start>"
 DEFAULT_G_END_TOKEN = "<g_end>"
 
-categories = [
-    "artificial intelligence, agents",
-    "artificial intelligence, data mining",
-    "artificial intelligence, expert systems",
-    "artificial intelligence, games and search",
-    "artificial intelligence, knowledge representation",
-    "artificial intelligence, machine learning, case-based",
-    "artificial intelligence, machine learning, genetic algorithms",
-    "artificial intelligence, machine learning, neural networks",
-    "artificial intelligence, machine learning, probabilistic methods",
-    "artificial intelligence, machine learning, reinforcement learning",
-    "artificial intelligence, machine learning, rule learning",
-    "artificial intelligence, machine learning, theory",
-    "artificial intelligence, nlp",
-    "artificial intelligence, planning",
-    "artificial intelligence, robotics",
-    "artificial intelligence, speech",
-    "artificial intelligence, theorem proving",
-    "artificial intelligence, vision and pattern recognition",
-    "data structures, algorithms and theory, computational complexity",
-    "data structures, algorithms and theory, computational geometry",
-    "data structures, algorithms and theory, formal languages",
-    "data structures, algorithms and theory, hashing",
-    "data structures, algorithms and theory, logic",
-    "data structures, algorithms and theory, parallel",
-    "data structures, algorithms and theory, quantum computing",
-    "data structures, algorithms and theory, randomized",
-    "data structures, algorithms and theory, sorting",
-    "databases, concurrency",
-    "databases, deductive",
-    "databases, object oriented",
-    "databases, performance",
-    "databases, query evaluation",
-    "databases, relational",
-    "databases, temporal",
-    "encryption and compression, compression",
-    "encryption and compression, encryption",
-    "encryption and compression, security",
-    "hardware and architecture, distributed architectures",
-    "hardware and architecture, high performance computing",
-    "hardware and architecture, input output and storage",
-    "hardware and architecture, logic design",
-    "hardware and architecture, memory structures",
-    "hardware and architecture, microprogramming",
-    "hardware and architecture, vlsi",
-    "human computer interaction, cooperative",
-    "human computer interaction, graphics and virtual reality",
-    "human computer interaction, interface design",
-    "human computer interaction, multimedia",
-    "human computer interaction, wearable computers",
-    "information retrieval, digital library",
-    "information retrieval, extraction",
-    "information retrieval, filtering",
-    "information retrieval, retrieval",
-    "nan",
-    "networking, internet",
-    "networking, protocols",
-    "networking, routing",
-    "networking, wireless",
-    "operating systems, distributed",
-    "operating systems, fault tolerance",
-    "operating systems, memory management",
-    "operating systems, realtime",
-    "programming, compiler design",
-    "programming, debugging",
-    "programming, functional",
-    "programming, garbage collection",
-    "programming, java",
-    "programming, logic",
-    "programming, object oriented",
-    "programming, semantics",
-    "programming, software development"
-]
+def compare_answers(output: str, label: str) -> bool:
+    """
+    Compare the answer (numeric index) given in two strings.
 
-def find_common_categories(output, label, categories):
-    # 转换为小写以进行不区分大小写的匹配
-    output = output.lower()
-    label = label.lower()
+    Parameters:
+    - output: A string containing the model's output.
+    - label: A string containing the correct label.
 
-    # 找到每个字符串中的分类
-    output_categories = [cat for cat in categories if cat in output]
-    label_categories = [cat for cat in categories if cat in label]
-
-    # 查找共同分类
-    common_categories = set(output_categories).intersection(label_categories)
+    Returns:
+    - A boolean indicating whether the answers match.
+    """
     
-    almost_common = []
-    # 分割字符串并去除最后一个词
-    for output_category in output_categories:
-        parts1 = output_category.rsplit(',', 1)[0]
-        for label_category in label_categories:
-            parts2 = label_category.rsplit(',', 1)[0]
-            if parts1 == parts2:
-                almost_common.append(parts1)
-
-    return common_categories, output_categories, label_categories, almost_common
+    # Use regex to find the first occurrence of a number in each string
+    output_answer = re.search(r'\d+', output)
+    label_answer = re.search(r'\d+', label)
+    
+    # Check if a number was found in both strings
+    if output_answer and label_answer:
+        # Compare the numeric answers
+        return output_answer.group() == label_answer.group()
+    else:
+        # If no number was found in either string, return False
+        return False
 
 
 def KNN_cos(train_set, test_set, n_neighbours):
@@ -169,23 +96,24 @@ def run_eval(args, num_gpus):
     # split question file into num_gpus files
     prompt_file = load_prompting_file(args.prompting_file)
     prompt_file = prompt_file[args.start_id:args.end_id]
-    # chunk_size = len(prompt_file) // num_gpus
-    # ans_handles = []
-    # split_list = list(range(args.start_id, args.end_id, chunk_size))
-    # idx_list = list(range(0, len(prompt_file), chunk_size))
-    # if len(split_list) == num_gpus: 
-    #     split_list.append(args.end_id)
-    #     idx_list.append(len(prompt_file))
-    # elif len(split_list) == num_gpus + 1: 
-    #     split_list[-1] = args.end_id
-    #     idx_list[-1] = len(prompt_file)
-    # else: 
-    #     raise ValueError('error in the number of list')
+    chunk_size = len(prompt_file) // num_gpus
+    ans_handles = []
+    split_list = list(range(args.start_id, args.end_id, chunk_size))
+    idx_list = list(range(0, len(prompt_file), chunk_size))
+    if len(split_list) == num_gpus: 
+        split_list.append(args.end_id)
+        idx_list.append(len(prompt_file))
+    elif len(split_list) == num_gpus + 1: 
+        split_list[-1] = args.end_id
+        idx_list[-1] = len(prompt_file)
+    else: 
+        raise ValueError('error in the number of list')
 
     if osp.exists(args.output_res_path) is False: 
         os.mkdir(args.output_res_path)
     
     args.use_rag = False
+    args.tuned_graph_tower = False
     if args.tuned_graph_tower == False:
         if args.gnn_type == 'gt':
             clip_graph, args_graph= load_model_pretrained(CLIP, '/home/cjz/GraphGPT/clip_gt_arxiv')
@@ -200,28 +128,8 @@ def run_eval(args, num_gpus):
         new_keys = [k.replace('model.graph_tower.', '') for k in graph_tower_dict.keys()]
         modified_dict = dict(zip(new_keys, graph_tower_dict.values()))
         graph_tower.load_state_dict(modified_dict)
-    train_file = load_prompting_file('/home/cjz/GraphGPT/reshape/train_items.json')
-    if os.path.exists(os.path.join(args.embedding_file, 'train_embedding_array.npy')) and args.use_rag == True:
-        train_embedding_array = np.load(os.path.join(args.embedding_file, 'train_embedding_array.npy'), allow_pickle=True)
-    else:
-        train_embedding_array = np.array([])
-    if(args.use_rag == True):
-        train_embedding_list = []
-        print(f'Total: {len(train_file)}')
-        for idx, instruct_item in tqdm(enumerate(train_file)):
-            # instruct_item = prompt_file[0]
-            # if idx >= 3: 
-            #     break
-            graph_dict = load_graph(instruct_item, args.graph_data_path)
-            graph_data = graph_dict['graph_data']
-            # label = instruct_item['conversations'][1]['value']
-            node_forward_out = graph_tower(graph_data)
-            train_embedding_list.append(node_forward_out[0].detach())
-        train_embedding_list = torch.stack(train_embedding_list)
-        train_embedding_array = train_embedding_list.numpy()
-        np.save(os.path.join(args.embedding_file, 'train_embedding_array.npy'), train_embedding_array)
         
-    eval_model(args, prompt_file, 0, 210, graph_tower, train_embedding_array, train_file)
+    eval_model(args, prompt_file, args.start_id, args.end_id, graph_tower)
     # for idx in range(len(idx_list) - 1):
     #     start_idx = idx_list[idx]
     #     end_idx = idx_list[idx + 1]
@@ -246,7 +154,7 @@ def run_eval(args, num_gpus):
 
 # @ray.remote(num_gpus=1)
 @torch.inference_mode()
-def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embedding_array, train_file):
+def eval_model(args, prompt_file, start_idx, end_idx, graph_tower):
     # load prompting file
     # prompt_file = load_prompting_file(args.prompting_file)
 
@@ -269,7 +177,8 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         tokenizer.add_tokens([DEFAULT_G_START_TOKEN, DEFAULT_G_END_TOKEN], special_tokens=True)
     
     if args.combined_graph_prompt == True:
-        prompt_dict = torch.load(os.path.join(args.tuned_graph_prompt, "combined_graph_prompt.bin")) 
+        # prompt_dict = torch.load(os.path.join(args.tuned_graph_prompt, "combined_graph_prompt.bin")) 
+        prompt_dict = torch.load(args.tuned_graph_prompt)
         
         new_linear_dict = {
             'weight': prompt_dict['model.new_prompt_linear.weight'].half(),
@@ -334,16 +243,21 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
     # TODO: add graph token len
 
     res_data = []
-    print(f'total: {len(prompt_file)}')
+    print(f'total: {end_idx - start_idx}')
     correct = 0
-    almost_correct = 0
+    with open(args.graph_data_path, 'r', encoding='utf-8') as f:
+        all_features_list = json.load(f)
+    graph_data_all = [[torch.tensor(sublist, dtype=torch.float16).cuda() for sublist in feature_list] for feature_list in all_features_list]
     for idx, instruct_item in tqdm(enumerate(prompt_file)):
         # instruct_item = prompt_file[0]
-        # if idx >= 3: 
-        #     break
-        graph_dict = load_graph(instruct_item, args.graph_data_path)
-        graph_token_len = graph_dict['graph_token_len']
-        graph_data = graph_dict['graph_data']
+        if idx >= end_idx: 
+            break
+        # graph_dict = load_graph(instruct_item, args.graph_data_path)
+        # graph_token_len = graph_dict['graph_token_len']
+        # graph_data = graph_dict['graph_data']
+        graph_data = graph_data_all[idx]
+        graph_data = torch.cat(graph_data, dim=0).cuda()
+        graph_token_len = args.T
 
         qs = instruct_item["conversations"][0]["value"]
         # if use_graph_start_end:
@@ -354,14 +268,14 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         replace_token = DEFAULT_GRAPH_PATCH_TOKEN * graph_token_len
         replace_token = DEFAULT_G_START_TOKEN + replace_token + DEFAULT_G_END_TOKEN
         qs = qs.replace(DEFAULT_GRAPH_TOKEN, replace_token)
-        
+        # qs = qs.replace('{T_max}', '4')
         
 
         # if "v1" in args.model_name.lower():
         #     conv_mode = "graphchat_v1"
         # else: 
         #     raise ValueError('Don\'t support this model')
-        conv_mode = "rag"
+        conv_mode = "molecule"
 
         if args.conv_mode is not None and conv_mode != args.conv_mode:
             print('[WARNING] the auto inferred conversation mode is {}, while `--conv-mode` is {}, using {}'.format(conv_mode, args.conv_mode, args.conv_mode))
@@ -369,38 +283,37 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
             args.conv_mode = conv_mode
 
         conv = conv_templates[args.conv_mode].copy()
-        graph_data_list = []
-        rag_label = ''
-        new_qs = ''
-        if args.use_rag:
-            graph_data.graph_node = graph_data.graph_node.half()
-            node_forward_out = graph_tower(graph_data)
-            target_embedding = node_forward_out[0].cpu().detach().numpy().astype('float32')
-            target_embedding = target_embedding.reshape(1, 128)
-            train_embedding = train_embedding_array.astype('float32')
-            faiss.normalize_L2(target_embedding)
-            faiss.normalize_L2(train_embedding)
-            distance, index = KNN_cos(train_embedding, target_embedding, 5)
-            new_qs = 'Here are some examples: \n'
-            count = 1
-            for id in index[0]:
-                example_graph_dict = load_graph(train_file[id], args.graph_data_path)
-                example_graph_token_len = example_graph_dict['graph_token_len']
-                example_graph_data = example_graph_dict['graph_data']
-                example_graph_data.graph_node = example_graph_data.graph_node.to(torch.float16)
-                graph_data_list.append(example_graph_data.cuda())
-                # node_feature = torch.tensor(train_embedding_array[id])
-                # node_feature = model.get_model().graph_projector(node_feature)
-                replace_token = DEFAULT_GRAPH_PATCH_TOKEN * example_graph_token_len
-                replace_token = DEFAULT_G_START_TOKEN + replace_token + DEFAULT_G_END_TOKEN
-                example = train_file[id]['conversations'][0]['value'].replace(DEFAULT_GRAPH_TOKEN, replace_token)
-                new_qs = new_qs + f'Example {count}: \n' + example + '\nAnswer: ' + train_file[id]['conversations'][1]['value'] + '\n'
-                count += 1
-                rag_label = rag_label + train_file[id]['conversations'][1]['value'] + '; '
-            new_qs = new_qs + 'Please note that the papers I have selected as examples are very similar to the one you need to categorize. You can use the classifications from my samples as a reference.' + 'The one you need to categorize: \n'
-        new_qs = new_qs + qs
+        # rag_label = ''
+        # new_qs = ''
+        # if args.use_rag:
+        #     graph_data.graph_node = graph_data.graph_node.half()
+        #     node_forward_out = graph_tower(graph_data)
+        #     target_embedding = node_forward_out[0].cpu().detach().numpy().astype('float32')
+        #     target_embedding = target_embedding.reshape(1, 128)
+        #     train_embedding = train_embedding_array.astype('float32')
+        #     faiss.normalize_L2(target_embedding)
+        #     faiss.normalize_L2(train_embedding)
+        #     distance, index = KNN_cos(train_embedding, target_embedding, 5)
+        #     new_qs = 'Here are some examples: \n'
+        #     count = 1
+        #     for id in index[0]:
+        #         example_graph_dict = load_graph(train_file[id], args.graph_data_path)
+        #         example_graph_token_len = example_graph_dict['graph_token_len']
+        #         example_graph_data = example_graph_dict['graph_data']
+        #         example_graph_data.graph_node = example_graph_data.graph_node.to(torch.float16)
+        #         graph_data_list.append(example_graph_data.cuda())
+        #         # node_feature = torch.tensor(train_embedding_array[id])
+        #         # node_feature = model.get_model().graph_projector(node_feature)
+        #         replace_token = DEFAULT_GRAPH_PATCH_TOKEN * example_graph_token_len
+        #         replace_token = DEFAULT_G_START_TOKEN + replace_token + DEFAULT_G_END_TOKEN
+        #         example = train_file[id]['conversations'][0]['value'].replace(DEFAULT_GRAPH_TOKEN, replace_token)
+        #         new_qs = new_qs + f'Example {count}: \n' + example + '\nAnswer: ' + train_file[id]['conversations'][1]['value'] + '\n'
+        #         count += 1
+        #         rag_label = rag_label + train_file[id]['conversations'][1]['value'] + '; '
+        #     new_qs = new_qs + 'Please note that the papers I have selected as examples are very similar to the one you need to categorize. You can use the classifications from my samples as a reference.' + 'The one you need to categorize: \n'
+        # new_qs = new_qs + qs
             
-        conv.append_message(conv.roles[0], new_qs)
+        conv.append_message(conv.roles[0], qs)
         conv.append_message(conv.roles[1], None)
         prompt = conv.get_prompt()
         inputs = tokenizer([prompt])
@@ -413,17 +326,18 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         keywords = [stop_str]
         stopping_criteria = KeywordsStoppingCriteria(keywords, tokenizer, input_ids)
 
-        graph_data.graph_node = graph_data.graph_node.to(torch.float16)
-        # graph_data.edge_index = graph_data.edge_index.to(torch.float16)
-        graph_data_list.append(graph_data.cuda())
+        start_time = time.time()
         with torch.inference_mode():
             output_ids = model.generate(
                 input_ids,
-                graph_data=graph_data_list,
+                graph_data=graph_data,
                 do_sample=True,
                 temperature=0.2,
-                max_new_tokens=1024,
+                max_new_tokens=64,
                 stopping_criteria=[stopping_criteria])
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        print(f"运行时间: {elapsed_time} 秒")
         input_token_len = input_ids.shape[1]
         n_diff_input_output = (input_ids != output_ids[:, :input_token_len]).sum().item()
         if n_diff_input_output > 0:
@@ -434,25 +348,21 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
             outputs = outputs[:-len(stop_str)]
         outputs = outputs.strip()
         # print(outputs)
-        common, res, label, almost_common = find_common_categories(outputs, instruct_item['conversations'][1]['value'], categories)
-        
-        if len(common) > 0:
+        True_flag = False
+        if compare_answers(outputs, instruct_item['conversations'][1]['value']):
             correct += 1
-        elif len(almost_common) != 0:
-            almost_correct += 1
+            True_flag = True
+            print(f"Correct! Number {correct}.")
 
-        res_data.append({"id": instruct_item["id"], "node_idx": instruct_item["graph"]["node_idx"], "res": res, "outputs": outputs, 
-                         'label': label, 'common': list(common), 'almost common': almost_common, 'rag label': rag_label}.copy())
+        res_data.append({"id": instruct_item["id"], "res": outputs, "label": instruct_item['conversations'][1]['value'], "Correct answer": True_flag}.copy())
         # with open(osp.join(args.output_res_path, 'arxiv_test_res_{}_{}_with_prompt.json'.format(start_idx, end_idx)), "w") as fout:
         #     json.dump(res_data, fout, indent=4)
     print('acc = ', correct/len(prompt_file))
-    print('almost correct answer: ', almost_correct)
     lead_dict = {
-        'acc': correct/len(prompt_file),
-        'almost_correct': almost_correct,
+        'acc': correct/len(prompt_file)
     }
     res_data.insert(0, lead_dict)
-    with open(osp.join(args.output_res_path, 'arxiv_test_res_20240402_01.json'.format(start_idx, end_idx)), "w") as fout:
+    with open(osp.join(args.output_res_path, '0shot_Retrieval_20240402.json'.format(start_idx, end_idx)), "w") as fout:
         json.dump(res_data, fout, indent=4)
     return res_data
     # with open(args.output_res_path, "w") as fout:
@@ -471,15 +381,16 @@ if __name__ == "__main__":
     parser.add_argument("--num_gpus", type=int, default=4)
 
     parser.add_argument("--start_id", type=int, default=0)
-    parser.add_argument("--end_id", type=int, default=20567)
+    parser.add_argument("--end_id", type=int, default=210)
     
-    parser.add_argument('--tuned_graph_tower', type=lambda x: (str(x).lower() == 'true'), default=False)
+    parser.add_argument("--tuned_graph_tower", type=bool, default=False)
     parser.add_argument("--graph_tower_path", type=str, default=None)
     parser.add_argument("--gnn_type", type=str, default="gt")
     parser.add_argument("--use_rag", type=bool, default=False)
     parser.add_argument("--embedding_file", type=str, default='/home/cjz/GraphGPT/reshape')
     parser.add_argument("--tuned_graph_prompt", type=str, default=None)
     parser.add_argument("--combined_graph_prompt", type=bool, default=True)
+    parser.add_argument("--T", type=int, default=4)
 
     args = parser.parse_args()
 
