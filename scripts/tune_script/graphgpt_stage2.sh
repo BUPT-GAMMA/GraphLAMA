@@ -1,11 +1,11 @@
 # to fill in the following path to run the second stage of our GraphGPT!
-model_path=/home/cjz/vicuna-7b-v1.5-16k
-instruct_ds=/home/cjz/GraphGPT/stage_2_instruct/arxiv_pub_node_st_cot_link_mix.json
+model_path=/home/cjz/SFTonGFM/checkpoints/fine_tune-combined-prompt-2
+instruct_ds=/home/cjz/SFTonGFM/reshape/train_items_tit_gen.json
 graph_data_path=/home/cjz/GraphGPT/graph_data/graph_data_all.pt
 pretra_gnn=/home/cjz/GraphGPT/clip_gt_arxiv
-tuned_proj=/home/cjz/GraphGPT/checkpoints/stage_2/graph_projector/checkpoint-150000.bin
-output_model=/home/cjz/SFTonGFM/checkpoints/stage_2-combined-prompt
-export CUDA_VISIBLE_DEVICES=2
+tuned_proj=/home/cjz/SFTonGFM/checkpoints/stage_2-combined-prompt/graph_projector/checkpoint-320000.bin
+output_model=/home/cjz/SFTonGFM/checkpoints/tit_gen-combined-prompt
+export CUDA_VISIBLE_DEVICES=0
 export PYTHONPATH='/home/cjz/SFTonGFM'
 
 wandb offline
@@ -19,8 +19,8 @@ nohup python \
     --graph_data_path ${graph_data_path} \
     --graph_tower ${pretra_gnn} \
     --pretrain_graph_mlp_adapter ${tuned_proj} \
-    --tune_graph_mlp_adapter True \
-    --tune_graph_tower True \
+    --tune_graph_mlp_adapter False \
+    --tune_graph_tower False \
     --use_graph_prompt True \
     --combined_graph_prompt True \
     --graph_select_layer -2 \
@@ -45,4 +45,4 @@ nohup python \
     --gradient_checkpointing True \
     --dataloader_num_workers 4 \
     --lazy_preprocess True \
-    --report_to wandb > /home/cjz/graphgpt_stage2_combined_prompt2.out 2>&1 &
+    --report_to wandb > /home/cjz/SFTonGFM/tit_gen_20240416.out 2>&1 &

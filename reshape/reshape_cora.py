@@ -4,8 +4,10 @@ import json
 import os.path as osp
 from collections import defaultdict
 from graphgpt.model import *
+import re
 import torch
 import os
+import random
 
 categories = [
     "artificial intelligence, agents",
@@ -259,8 +261,85 @@ def five_classification():
     for i, test_set in enumerate([test_set_01, test_set_02, test_set_03, test_set_04], start=1):
         with open(f'/home/cjz/SFTonGFM/reshape/test_items_5ways_0{i}.json', 'w', encoding='utf-8') as file:
             json.dump(test_set, file, ensure_ascii=False, indent=4)
-    
 
+def G2P2_arxiv():
+    tit_list = []
+    while len(tit_list) < 169343 :
+        tit_list.append(None)
+    mis_match = 0
+    arxiv_items = load_file('/home/cjz/GraphGPT/stage_2_instruct/arxiv_pub_node_st_cot_link_mix.json')
+    graph_data = torch.load('/home/cjz/GraphGPT/graph_data/graph_data_all.pt')
+    for instruct_item in enumerate(arxiv_items):
+        idx = instruct_item[1]['id']
+        if 'arxiv' in idx:
+            id = instruct_item[1]['graph']['node_idx']
+            match = re.search(r'\nAbstract:(.*?)\n Question:', instruct_item[1]['conversations'][0]['value'], re.DOTALL)
+            if match:
+                content_between = match.group(1).strip()
+                tit_list[id] = content_between
+            else:
+                mis_match += 1
+    print(mis_match)
+    with open('/home/cjz/G2P2/data/arxiv_tit_list.json', 'w', encoding='utf-8') as file:
+        json.dump(tit_list, file, ensure_ascii=False, indent=4)
+                
+def tit_gen_data():
+    tit_list = []
+    abs_list = []
+    train_tit_items = []
+    test_tit_items = []
+    graph_data = torch.load('/home/cjz/GraphGPT/graph_data/graph_data_all.pt')
+    cora_insturct = load_file(args.prompting_file)
+    split = int(len(cora_insturct) * 0.8)
+    train_items = cora_insturct[:split]
+    test_items = cora_insturct[split:]
+    with open('/home/cjz/G2P2/data/train_text.txt', 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            line = line.strip().split('\t')
+            tit_list.append(line[1])
+            abs_list.append(line[2])
+    for idx, instrcut_item in enumerate(train_items):
+        node_id = instrcut_item['graph']['node_idx']
+        qs = instrcut_item['conversations'][0]['value']
+        old_string = 'Which of the following subcategories of computer science does this paper belong to: 1. operating systems, memory management 2. artificial intelligence, planning 3. artificial intelligence, vision and pattern recognition 4. artificial intelligence, machine learning, case-based 5. artificial intelligence, agents 6. artificial intelligence, machine learning, probabilistic methods 7. operating systems, distributed 8. artificial intelligence, machine learning, genetic algorithms 9. human computer interaction, graphics and virtual reality 10. programming, object oriented 11. encryption and compression, encryption 12. networking, protocols 13.  programming, software development 14. programming, compiler design 15. artificial intelligence, machine learning, theory 16. artificial intelligence, machine learning, neural networks 17. programming, logic 18. operating systems, realtime 19. artificial intelligence, speech 20. artificial intelligence, robotics 21. artificial intelligence, games and search ? Directly give the full name of the most likely category of this paper. '
+        new_string = 'Please generate a suitable title for this paper. Directly give the title.'
+        match = re.search(r'\nAbstract:(.*?)\n Question:', instrcut_item['conversations'][0]['value'], re.DOTALL)
+        if match:
+            qs = qs.replace(match.group(1), abs_list[node_id])
+        instrcut_item['conversations'][0]['value'] = qs.replace(old_string, new_string)
+        instrcut_item['conversations'][1]['value'] = tit_list[node_id]
+        train_tit_items.append(instrcut_item)
+    for idx, instrcut_item in enumerate(test_items):
+        node_id = instrcut_item['graph']['node_idx']
+        qs = instrcut_item['conversations'][0]['value']
+        old_string = 'Which of the following subcategories of computer science does this paper belong to: 1. operating systems, memory management 2. artificial intelligence, planning 3. artificial intelligence, vision and pattern recognition 4. artificial intelligence, machine learning, case-based 5. artificial intelligence, agents 6. artificial intelligence, machine learning, probabilistic methods 7. operating systems, distributed 8. artificial intelligence, machine learning, genetic algorithms 9. human computer interaction, graphics and virtual reality 10. programming, object oriented 11. encryption and compression, encryption 12. networking, protocols 13.  programming, software development 14. programming, compiler design 15. artificial intelligence, machine learning, theory 16. artificial intelligence, machine learning, neural networks 17. programming, logic 18. operating systems, realtime 19. artificial intelligence, speech 20. artificial intelligence, robotics 21. artificial intelligence, games and search ? Directly give the full name of the most likely category of this paper. '
+        new_string = 'Please generate a suitable title for this paper. Directly give the title.'
+        match = re.search(r'\nAbstract:(.*?)\n Question:', instrcut_item['conversations'][0]['value'], re.DOTALL)
+        if match:
+            qs = qs.replace(match.group(1), abs_list[node_id])
+        instrcut_item['conversations'][0]['value'] = qs.replace(old_string, new_string)
+        instrcut_item['conversations'][1]['value'] = tit_list[node_id]
+        test_tit_items.append(instrcut_item)    
+    # train_items = load_file('/home/cjz/SFTonGFM/reshape/train_items.json')
+    train_file = args.output_path + 'train_items_tit_gen.json'
+    test_file = args.output_path + 'test_items_tit_gen.json'
+    train_file_5shots = args.output_path + 'train_items_tit_gen_5shots.json'
+    test_file_5shots = args.output_path + 'test_items_tit_gen_5shots.json'
+    
+    all_items = train_tit_items + test_tit_items
+    split = int(len(all_items) * 0.33)
+    train_tit_items_5shots = all_items[:split]
+    test_tit_items_5shots = all_items[split:]
+    with open(train_file, 'w', encoding='utf-8') as file:
+        json.dump(train_tit_items, file, ensure_ascii=False, indent=4)
+    with open(test_file, 'w', encoding='utf-8') as file:
+        json.dump(test_tit_items, file, ensure_ascii=False, indent=4)
+    with open(train_file_5shots, 'w', encoding='utf-8') as file:
+        json.dump(train_tit_items_5shots, file, ensure_ascii=False, indent=4)
+    with open(test_file_5shots, 'w', encoding='utf-8') as file:
+        json.dump(test_tit_items_5shots, file, ensure_ascii=False, indent=4)
+    
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--prompting_file", type=str, default='/home/cjz/GraphGPT/evaluation/cora_test_instruct_std.json')
@@ -268,12 +347,15 @@ if __name__ == "__main__":
     parser.add_argument("--selected_file", type=str, default='/home/cjz/GraphGPT/reshape/selected_items.json')
     parser.add_argument("--output_path", type=str, default='/home/cjz/SFTonGFM/reshape/')
     parser.add_argument("--shot_num", type=int, default=50)
-    parser.add_argument("--test_file", type=str, default='/home/cjz/GraphGPT/reshape/test_items.json')
+    parser.add_argument("--test_file", type=str, default='/home/cjz/SFTonGFM/reshape/test_items.json')
+    parser.add_argument("--train_file", type=str, default='/home/cjz/SFTonGFM/reshape/train_items.json')
 
     args = parser.parse_args()
     
     # reshape(args)
     # separate(args)
     # answer_stacstics()
-    five_classification()
+    # five_classification()
+    # G2P2_arxiv()
+    tit_gen_data()
     

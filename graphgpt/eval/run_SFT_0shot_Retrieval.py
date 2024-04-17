@@ -326,18 +326,18 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower):
         keywords = [stop_str]
         stopping_criteria = KeywordsStoppingCriteria(keywords, tokenizer, input_ids)
 
-        start_time = time.time()
+        # start_time = time.time()
         with torch.inference_mode():
             output_ids = model.generate(
                 input_ids,
                 graph_data=graph_data,
                 do_sample=True,
                 temperature=0.2,
-                max_new_tokens=64,
+                max_new_tokens=516,
                 stopping_criteria=[stopping_criteria])
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        print(f"运行时间: {elapsed_time} 秒")
+        # end_time = time.time()
+        # elapsed_time = end_time - start_time
+        # print(f"运行时间: {elapsed_time} 秒")
         input_token_len = input_ids.shape[1]
         n_diff_input_output = (input_ids != output_ids[:, :input_token_len]).sum().item()
         if n_diff_input_output > 0:
@@ -362,7 +362,7 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower):
         'acc': correct/len(prompt_file)
     }
     res_data.insert(0, lead_dict)
-    with open(osp.join(args.output_res_path, '0shot_Retrieval_20240402.json'.format(start_idx, end_idx)), "w") as fout:
+    with open(osp.join(args.output_res_path, '0shot_Retrieval_20240403_01.json'.format(start_idx, end_idx)), "w") as fout:
         json.dump(res_data, fout, indent=4)
     return res_data
     # with open(args.output_res_path, "w") as fout:
