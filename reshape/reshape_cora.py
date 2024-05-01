@@ -183,16 +183,16 @@ def separate(args):
         category = [cat for cat in categories if cat in ans]
         for cat in category:
             category_counts[cat.strip()] += 1
-            if category_counts[cat.strip()] <= 50:
+            if category_counts[cat.strip()] <= 20:
                 train_set.append(idx)
             elif category_counts[cat.strip()] > 50 and category_counts[cat.strip()] <= 60:
                 test_set.append(idx)
-            else:
-                train_set.append(idx)
+            # else:
+            #     train_set.append(idx)
     train_items = [selected_items[idx] for idx in train_set]
     test_items = [selected_items[idx] for idx in test_set]
     print(f'train: {len(train_items)}, test: {len(test_items)}.')
-    train_file = args.output_path + 'train_items_{}_shots.json'.format(100)
+    train_file = args.output_path + 'train_items_{}_shots.json'.format(20)
     # test_file = args.output_path + 'test_items.json'
     with open(train_file, 'w', encoding='utf-8') as file:
         json.dump(train_items, file, ensure_ascii=False, indent=4)
@@ -237,7 +237,15 @@ def answer_stacstics():
     
 def five_classification():
     test_items = load_file(args.test_file)
+    train_items = load_file(args.train_file)
     test_set_01, test_set_02, test_set_03, test_set_04 = [], [], [], []
+    category_counts = defaultdict(int)
+    train_set_01_5shots, train_set_02_5shots, train_set_03_5shots, train_set_04_5shots = [], [], [], []
+    train_set_01_20shots, train_set_02_20shots, train_set_03_20shots, train_set_04_20shots = [], [], [], []
+    train_set_01_50shots, train_set_02_50shots, train_set_03_50shots, train_set_04_50shots = [], [], [], []
+    train_set_5shots = [train_set_01_5shots, train_set_02_5shots, train_set_03_5shots, train_set_04_5shots]
+    train_set_20shots = [train_set_01_20shots, train_set_02_20shots, train_set_03_20shots, train_set_04_20shots]
+    train_set_50shots = [train_set_01_50shots, train_set_02_50shots, train_set_03_50shots, train_set_04_50shots]
     test_sets = [test_set_01, test_set_02, test_set_03, test_set_04]
     keys_list = list(five_ways_categories.keys())
     print(f'total: {len(test_items)}')
@@ -248,19 +256,44 @@ def five_classification():
         '1. encryption and compression, encryption 2. networking, protocols 3.  programming, software development 4. programming, compiler design 5. artificial intelligence, machine learning, theory',
         '1. artificial intelligence, machine learning, neural networks 2. programming, logic 3. operating systems, realtime 4. artificial intelligence, robotics 5. artificial intelligence, games and search'
     ]
-    for idx, instruct_item in enumerate(test_items):
+    # for idx, instruct_item in enumerate(test_items):
+    #     qs = instruct_item['conversations'][0]['value']
+    #     ans = instruct_item['conversations'][1]['value']
+    #     try:
+    #         index = keys_list.index(ans)
+    #         test_set_index = index // 5
+    #         instruct_item['conversations'][0]['value'] = qs.replace(old_string, new_strings[test_set_index])
+    #         test_sets[test_set_index].append(instruct_item)
+    #     except ValueError:
+    #         print(f"'{ans}' not found in the selected categories.")
+    for idx, instruct_item in enumerate(train_items):
         qs = instruct_item['conversations'][0]['value']
         ans = instruct_item['conversations'][1]['value']
         try:
             index = keys_list.index(ans)
-            test_set_index = index // 5
-            instruct_item['conversations'][0]['value'] = qs.replace(old_string, new_strings[test_set_index])
-            test_sets[test_set_index].append(instruct_item)
+            train_set_index = index // 5
+            category_counts[ans] += 1
+            instruct_item['conversations'][0]['value'] = qs.replace(old_string, new_strings[train_set_index])
+            if category_counts[ans] < 5:                
+                train_set_5shots[train_set_index].append(instruct_item)
+            if category_counts[ans] < 20:
+                train_set_20shots[train_set_index].append(instruct_item)
+            if category_counts[ans] < 50:
+                train_set_50shots[train_set_index].append(instruct_item)
         except ValueError:
             print(f"'{ans}' not found in the selected categories.")
-    for i, test_set in enumerate([test_set_01, test_set_02, test_set_03, test_set_04], start=1):
-        with open(f'/home/cjz/SFTonGFM/reshape/test_items_5ways_0{i}.json', 'w', encoding='utf-8') as file:
-            json.dump(test_set, file, ensure_ascii=False, indent=4)
+    # for i, test_set in enumerate([test_set_01, test_set_02, test_set_03, test_set_04], start=1):
+    #     with open(f'/home/cjz/SFTonGFM/reshape/test_items_5ways_0{i}.json', 'w', encoding='utf-8') as file:
+    #         json.dump(test_set, file, ensure_ascii=False, indent=4)
+    for i, train_set in enumerate(train_set_5shots, start=1):
+        with open(f'/home/cjz/SFTonGFM/reshape/train_items_5ways_0{i}_5shots.json', 'w', encoding='utf-8') as file:
+            json.dump(train_set, file, ensure_ascii=False, indent=4)
+    for i, train_set in enumerate(train_set_20shots, start=1):
+        with open(f'/home/cjz/SFTonGFM/reshape/train_items_5ways_0{i}_20shots.json', 'w', encoding='utf-8') as file:
+            json.dump(train_set, file, ensure_ascii=False, indent=4)
+    for i, train_set in enumerate(train_set_50shots, start=1):
+        with open(f'/home/cjz/SFTonGFM/reshape/train_items_5ways_0{i}_50shots.json', 'w', encoding='utf-8') as file:
+            json.dump(train_set, file, ensure_ascii=False, indent=4)
 
 def G2P2_arxiv():
     tit_list = []
@@ -289,10 +322,13 @@ def tit_gen_data():
     train_tit_items = []
     test_tit_items = []
     graph_data = torch.load('/home/cjz/GraphGPT/graph_data/graph_data_all.pt')
-    cora_insturct = load_file(args.prompting_file)
-    split = int(len(cora_insturct) * 0.8)
-    train_items = cora_insturct[:split]
-    test_items = cora_insturct[split:]
+    # train = load_file(args.train_file)
+    # test = load_file(args.test_file)
+    cora_instruct = load_file(args.prompting_file)
+    # cora_instruct = train + test
+    split = int(len(cora_instruct) * 0.8)
+    train_items = cora_instruct[:split]
+    test_items = cora_instruct[split:]
     with open('/home/cjz/G2P2/data/train_text.txt', 'r') as f:
         lines = f.readlines()
         for line in lines:
@@ -302,7 +338,7 @@ def tit_gen_data():
     for idx, instrcut_item in enumerate(train_items):
         node_id = instrcut_item['graph']['node_idx']
         qs = instrcut_item['conversations'][0]['value']
-        old_string = 'Which of the following subcategories of computer science does this paper belong to: 1. operating systems, memory management 2. artificial intelligence, planning 3. artificial intelligence, vision and pattern recognition 4. artificial intelligence, machine learning, case-based 5. artificial intelligence, agents 6. artificial intelligence, machine learning, probabilistic methods 7. operating systems, distributed 8. artificial intelligence, machine learning, genetic algorithms 9. human computer interaction, graphics and virtual reality 10. programming, object oriented 11. encryption and compression, encryption 12. networking, protocols 13.  programming, software development 14. programming, compiler design 15. artificial intelligence, machine learning, theory 16. artificial intelligence, machine learning, neural networks 17. programming, logic 18. operating systems, realtime 19. artificial intelligence, speech 20. artificial intelligence, robotics 21. artificial intelligence, games and search ? Directly give the full name of the most likely category of this paper. '
+        old_string = 'Which of the following subcategories of computer science does this paper belong to: 1. artificial intelligence, agents 2. artificial intelligence, data mining 3. artificial intelligence, expert systems 4. artificial intelligence, games and search 5. artificial intelligence, knowledge representation 6. artificial intelligence, machine learning, case-based 7. artificial intelligence, machine learning, genetic algorithms 8. artificial intelligence, machine learning, neural networks 9. artificial intelligence, machine learning, probabilistic methods 10. artificial intelligence, machine learning, reinforcement learning 11. artificial intelligence, machine learning, rule learning 12. artificial intelligence, machine learning, theory 13. artificial intelligence, nlp 14. artificial intelligence, planning 15. artificial intelligence, robotics 16. artificial intelligence, speech 17. artificial intelligence, theorem proving 18. artificial intelligence, vision and pattern recognition 19. data structures  algorithms and theory, computational complexity 20. data structures  algorithms and theory, computational geometry 21. data structures  algorithms and theory, formal languages 22. data structures  algorithms and theory, hashing 23. data structures  algorithms and theory, logic 24. data structures  algorithms and theory, parallel 25. data structures  algorithms and theory, quantum computing 26. data structures  algorithms and theory, randomized 27. data structures  algorithms and theory, sorting 28. databases, concurrency 29. databases, deductive 30. databases, object oriented 31. databases, performance 32. databases, query evaluation 33. databases, relational 34. databases, temporal 35. encryption and compression, compression 36. encryption and compression, encryption 37. encryption and compression, security 38. hardware and architecture, distributed architectures 39. hardware and architecture, high performance computing 40. hardware and architecture, input output and storage 41. hardware and architecture, logic design 42. hardware and architecture, memory structures 43. hardware and architecture, microprogramming 44. hardware and architecture, vlsi 45. human computer interaction, cooperative 46. human computer interaction, graphics and virtual reality 47. human computer interaction, interface design 48. human computer interaction, multimedia 49. human computer interaction, wearable computers 50. information retrieval, digital library 51. information retrieval, extraction 52. information retrieval, filtering 53. information retrieval, retrieval 54. nan 55. networking, internet 56. networking, protocols 57. networking, routing 58. networking, wireless 59. operating systems, distributed 60. operating systems, fault tolerance 61. operating systems, memory management 62. operating systems, realtime 63. programming, compiler design 64. programming, debugging 65. programming, functional 66. programming, garbage collection 67. programming, java 68. programming, logic 69. programming, object oriented 70. programming, semantics 71. programming, software development ? Directly give the full name of the most likely category of this paper. '
         new_string = 'Please generate a suitable title for this paper. Directly give the title.'
         match = re.search(r'\nAbstract:(.*?)\n Question:', instrcut_item['conversations'][0]['value'], re.DOTALL)
         if match:
@@ -313,7 +349,7 @@ def tit_gen_data():
     for idx, instrcut_item in enumerate(test_items):
         node_id = instrcut_item['graph']['node_idx']
         qs = instrcut_item['conversations'][0]['value']
-        old_string = 'Which of the following subcategories of computer science does this paper belong to: 1. operating systems, memory management 2. artificial intelligence, planning 3. artificial intelligence, vision and pattern recognition 4. artificial intelligence, machine learning, case-based 5. artificial intelligence, agents 6. artificial intelligence, machine learning, probabilistic methods 7. operating systems, distributed 8. artificial intelligence, machine learning, genetic algorithms 9. human computer interaction, graphics and virtual reality 10. programming, object oriented 11. encryption and compression, encryption 12. networking, protocols 13.  programming, software development 14. programming, compiler design 15. artificial intelligence, machine learning, theory 16. artificial intelligence, machine learning, neural networks 17. programming, logic 18. operating systems, realtime 19. artificial intelligence, speech 20. artificial intelligence, robotics 21. artificial intelligence, games and search ? Directly give the full name of the most likely category of this paper. '
+        old_string = 'Which of the following subcategories of computer science does this paper belong to: 1. artificial intelligence, agents 2. artificial intelligence, data mining 3. artificial intelligence, expert systems 4. artificial intelligence, games and search 5. artificial intelligence, knowledge representation 6. artificial intelligence, machine learning, case-based 7. artificial intelligence, machine learning, genetic algorithms 8. artificial intelligence, machine learning, neural networks 9. artificial intelligence, machine learning, probabilistic methods 10. artificial intelligence, machine learning, reinforcement learning 11. artificial intelligence, machine learning, rule learning 12. artificial intelligence, machine learning, theory 13. artificial intelligence, nlp 14. artificial intelligence, planning 15. artificial intelligence, robotics 16. artificial intelligence, speech 17. artificial intelligence, theorem proving 18. artificial intelligence, vision and pattern recognition 19. data structures  algorithms and theory, computational complexity 20. data structures  algorithms and theory, computational geometry 21. data structures  algorithms and theory, formal languages 22. data structures  algorithms and theory, hashing 23. data structures  algorithms and theory, logic 24. data structures  algorithms and theory, parallel 25. data structures  algorithms and theory, quantum computing 26. data structures  algorithms and theory, randomized 27. data structures  algorithms and theory, sorting 28. databases, concurrency 29. databases, deductive 30. databases, object oriented 31. databases, performance 32. databases, query evaluation 33. databases, relational 34. databases, temporal 35. encryption and compression, compression 36. encryption and compression, encryption 37. encryption and compression, security 38. hardware and architecture, distributed architectures 39. hardware and architecture, high performance computing 40. hardware and architecture, input output and storage 41. hardware and architecture, logic design 42. hardware and architecture, memory structures 43. hardware and architecture, microprogramming 44. hardware and architecture, vlsi 45. human computer interaction, cooperative 46. human computer interaction, graphics and virtual reality 47. human computer interaction, interface design 48. human computer interaction, multimedia 49. human computer interaction, wearable computers 50. information retrieval, digital library 51. information retrieval, extraction 52. information retrieval, filtering 53. information retrieval, retrieval 54. nan 55. networking, internet 56. networking, protocols 57. networking, routing 58. networking, wireless 59. operating systems, distributed 60. operating systems, fault tolerance 61. operating systems, memory management 62. operating systems, realtime 63. programming, compiler design 64. programming, debugging 65. programming, functional 66. programming, garbage collection 67. programming, java 68. programming, logic 69. programming, object oriented 70. programming, semantics 71. programming, software development ? Directly give the full name of the most likely category of this paper. '
         new_string = 'Please generate a suitable title for this paper. Directly give the title.'
         match = re.search(r'\nAbstract:(.*?)\n Question:', instrcut_item['conversations'][0]['value'], re.DOTALL)
         if match:
@@ -339,6 +375,49 @@ def tit_gen_data():
         json.dump(train_tit_items_5shots, file, ensure_ascii=False, indent=4)
     with open(test_file_5shots, 'w', encoding='utf-8') as file:
         json.dump(test_tit_items_5shots, file, ensure_ascii=False, indent=4)
+
+def task_text():
+    clas_71ways_text = 'Which of the following subcategories of computer science does this paper belong to: 1. artificial intelligence, agents 2. artificial intelligence, data mining 3. artificial intelligence, expert systems 4. artificial intelligence, games and search 5. artificial intelligence, knowledge representation 6. artificial intelligence, machine learning, case-based 7. artificial intelligence, machine learning, genetic algorithms 8. artificial intelligence, machine learning, neural networks 9. artificial intelligence, machine learning, probabilistic methods 10. artificial intelligence, machine learning, reinforcement learning 11. artificial intelligence, machine learning, rule learning 12. artificial intelligence, machine learning, theory 13. artificial intelligence, nlp 14. artificial intelligence, planning 15. artificial intelligence, robotics 16. artificial intelligence, speech 17. artificial intelligence, theorem proving 18. artificial intelligence, vision and pattern recognition 19. data structures  algorithms and theory, computational complexity 20. data structures  algorithms and theory, computational geometry 21. data structures  algorithms and theory, formal languages 22. data structures  algorithms and theory, hashing 23. data structures  algorithms and theory, logic 24. data structures  algorithms and theory, parallel 25. data structures  algorithms and theory, quantum computing 26. data structures  algorithms and theory, randomized 27. data structures  algorithms and theory, sorting 28. databases, concurrency 29. databases, deductive 30. databases, object oriented 31. databases, performance 32. databases, query evaluation 33. databases, relational 34. databases, temporal 35. encryption and compression, compression 36. encryption and compression, encryption 37. encryption and compression, security 38. hardware and architecture, distributed architectures 39. hardware and architecture, high performance computing 40. hardware and architecture, input output and storage 41. hardware and architecture, logic design 42. hardware and architecture, memory structures 43. hardware and architecture, microprogramming 44. hardware and architecture, vlsi 45. human computer interaction, cooperative 46. human computer interaction, graphics and virtual reality 47. human computer interaction, interface design 48. human computer interaction, multimedia 49. human computer interaction, wearable computers 50. information retrieval, digital library 51. information retrieval, extraction 52. information retrieval, filtering 53. information retrieval, retrieval 54. nan 55. networking, internet 56. networking, protocols 57. networking, routing 58. networking, wireless 59. operating systems, distributed 60. operating systems, fault tolerance 61. operating systems, memory management 62. operating systems, realtime 63. programming, compiler design 64. programming, debugging 65. programming, functional 66. programming, garbage collection 67. programming, java 68. programming, logic 69. programming, object oriented 70. programming, semantics 71. programming, software development ? Directly give the full name of the most likely category of this paper.'
+    clas_21ways_text = 'Which of the following subcategories of computer science does this paper belong to: 1. operating systems, memory management 2. artificial intelligence, planning 3. artificial intelligence, vision and pattern recognition 4. artificial intelligence, machine learning, case-based 5. artificial intelligence, agents 6. artificial intelligence, machine learning, probabilistic methods 7. operating systems, distributed 8. artificial intelligence, machine learning, genetic algorithms 9. human computer interaction, graphics and virtual reality 10. programming, object oriented 11. encryption and compression, encryption 12. networking, protocols 13.  programming, software development 14. programming, compiler design 15. artificial intelligence, machine learning, theory 16. artificial intelligence, machine learning, neural networks 17. programming, logic 18. operating systems, realtime 19. artificial intelligence, speech 20. artificial intelligence, robotics 21. artificial intelligence, games and search ? Directly give the full name of the most likely category of this paper.'
+    clas_5ways_01_text = 'Which of the following subcategories of computer science does this paper belong to: 1. operating systems, memory management 2. artificial intelligence, planning 3. artificial intelligence, vision and pattern recognition 4. artificial intelligence, machine learning, case-based 5. artificial intelligence, agents ? Directly give the full name of the most likely category of this paper.'
+    clas_5ways_02_text = 'Which of the following subcategories of computer science does this paper belong to: 1. artificial intelligence, machine learning, probabilistic methods 2. operating systems, distributed 3. artificial intelligence, machine learning, genetic algorithms 4. human computer interaction, graphics and virtual reality 5. programming, object oriented ? Directly give the full name of the most likely category of this paper.'
+    clas_5ways_03_text = 'Which of the following subcategories of computer science does this paper belong to: 1. encryption and compression, encryption 2. networking, protocols 3.  programming, software development 4. programming, compiler design 5. artificial intelligence, machine learning, theory ? Directly give the full name of the most likely category of this paper.'
+    clas_5ways_04_text = 'Which of the following subcategories of computer science does this paper belong to: 1. artificial intelligence, machine learning, neural networks 2. programming, logic 3. operating systems, realtime 4. artificial intelligence, robotics 5. artificial intelligence, games and search ? Directly give the full name of the most likely category of this paper.'
+    tit_gen_text = 'Please generate a suitable title for this paper. Directly give the title.'
+    graph_match_text = 'please reorder the list of papers according to the order of graph tokens (i.e., complete the matching of graph tokens and papers).'
+    arxiv_clas_text = 'Which arXiv CS sub-category does this paper belong to? Give the most likely arXiv CS sub-categories of this paper directly, in the form \"cs.XX\" with full name of the category.'
+    task_text_dict ={
+        'cora_71ways': clas_71ways_text,
+        'cora_21ways': clas_21ways_text,
+        'cora_5ways_1': clas_5ways_01_text,
+        'cora_5ways_2': clas_5ways_02_text,
+        'cora_5ways_3': clas_5ways_03_text,
+        'cora_5ways_4': clas_5ways_04_text,
+        'cora_tit_gen': tit_gen_text,
+        'arxiv_graph_match': graph_match_text,
+        'arxiv_clas': arxiv_clas_text,
+    }
+    with open('./task_text.json', 'w', encoding='utf-8') as file:
+        json.dump(task_text_dict, file, ensure_ascii=False, indent=4)
+    
+def seperate_arxiv_pubmed():
+    all_items = load_file('/home/cjz/GraphGPT/stage_2_instruct/arxiv_pub_node_st_cot_link_mix.json')
+    arxiv_node, pub_node, pub_link = [], [], []
+    for idx, item in enumerate(all_items):
+        if 'arxiv' in item['id']:
+            arxiv_node.append(item)
+        elif 'pubmed' in item['id']:
+            if 'LP' in item['id']:
+                pub_link.append(item)
+            else:
+                pub_node.append(item)
+    with open('./arxiv_node_std.json', 'w', encoding='utf-8') as file:
+        json.dump(arxiv_node, file, ensure_ascii=False, indent=4)
+    with open('./pub_link_std.json', 'w', encoding='utf-8') as file:
+        json.dump(pub_link, file, ensure_ascii=False, indent=4)
+    # with open('./pub_node_std.json', 'w', encoding='utf-8') as file:
+    #     json.dump(pub_node, file, ensure_ascii=False, indent=4)
+    print('done')
     
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -357,5 +436,5 @@ if __name__ == "__main__":
     # answer_stacstics()
     # five_classification()
     # G2P2_arxiv()
-    tit_gen_data()
-    
+    # tit_gen_data()
+    seperate_arxiv_pubmed()

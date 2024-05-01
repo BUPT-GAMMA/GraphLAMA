@@ -337,7 +337,7 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
 
     res_data = []
     print(f'total: {len(prompt_file)}')
-    all_score = 0
+    all_score_bleu_1, all_score_bleu_2, all_score_bleu_3, all_score_bleu_4 = 0, 0, 0, 0
     for idx, instruct_item in tqdm(enumerate(prompt_file)):
         # instruct_item = prompt_file[0]
         # if idx >= 3: 
@@ -441,16 +441,24 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         bleu_2 = sentence_bleu([outputs], label, weights=(0.5, 0.5, 0, 0))
         bleu_3 = sentence_bleu([outputs], label, weights=(0.33, 0.33, 0.33, 0))
         bleu_4 = sentence_bleu([outputs], label, weights=(0.25, 0.25, 0.25, 0.25))
-        score = bleu_1 + bleu_2 + bleu_3 + bleu_4
 
         res_data.append({"id": instruct_item["id"], "node_idx": instruct_item["graph"]["node_idx"], "outputs": outputs, 
-                         'label': label, 'score': score}.copy())
+                         'label': label, 'bleu_1': bleu_1}.copy())
         # with open(osp.join(args.output_res_path, 'arxiv_test_res_{}_{}_with_prompt.json'.format(start_idx, end_idx)), "w") as fout:
         #     json.dump(res_data, fout, indent=4)
-        all_score += score
-    print('acc = ', all_score/len(prompt_file))
+        all_score_bleu_1 += bleu_1
+        all_score_bleu_2 += bleu_2
+        all_score_bleu_3 += bleu_3
+        all_score_bleu_4 += bleu_4
+    print('bleu_1 = ', all_score_bleu_1/len(prompt_file))
+    print('bleu_2 = ', all_score_bleu_2/len(prompt_file))
+    print('bleu_3 = ', all_score_bleu_3/len(prompt_file))
+    print('bleu_4 = ', all_score_bleu_4/len(prompt_file))
     lead_dict = {
-        'acc': all_score/len(prompt_file)
+        'bleu_1': all_score_bleu_1/len(prompt_file),
+        'bleu_2': all_score_bleu_2/len(prompt_file),
+        'bleu_3': all_score_bleu_3/len(prompt_file),
+        'bleu_4': all_score_bleu_4/len(prompt_file),
     }
     res_data.insert(0, lead_dict)
     current_datetime = datetime.datetime.now()

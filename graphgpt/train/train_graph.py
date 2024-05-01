@@ -35,7 +35,8 @@ from PIL import Image
 import torch.nn as nn
 from torch_geometric.data import Data
 from torch.nn.parameter import Parameter
-
+from sentence_transformers import SentenceTransformer
+from sklearn import random_projection
 # TODO: import and use code from ../data/dataset.py
 
 IGNORE_INDEX = -100
@@ -64,7 +65,7 @@ class ModelArguments:
     pretrain_graph_prompt: Optional[str] = field(default=None)
     pretrain_graph_tower: Optional[str] = field(default=None)
     combined_graph_prompt: bool = field(default=False)
-
+    task_related_prompt: bool = field(default=False)
 
 @dataclass
 class DataArguments:
@@ -77,6 +78,8 @@ class DataArguments:
     graph_content: Optional[str] = field(default=None)
     graph_data_path: Optional[str] = field(default=None)
     image_aspect_ratio: str = 'square'
+    task_text_path: Optional[str] = field(default=None)
+    task_type: Optional[str] = field(default=None)
 
 
 @dataclass
@@ -878,7 +881,19 @@ def train():
     else:
         tokenizer.pad_token = tokenizer.unk_token
         conversation_lib.default_conversation = conversation_lib.conv_templates["vicuna_v1_1"]
-
+    if model_args.task_related_prompt:
+        # task_text = json.load(open(data_args.task_text_path, "r"))[data_args.task_type]
+        # bert_model = SentenceTransformer('all-MiniLM-L6-v2')
+        # task_embedding = bert_model.encode(task_text)
+        # task_embedding = task_embedding.reshape(1, -1)
+        # transformer = random_projection.GaussianRandomProjection(n_components=128, random_state=42)
+        # task_embedding = transformer.fit_transform(task_embedding)
+        # task_embedding = torch.tensor(task_embedding).float()
+        laod_embedding_dict = torch.load('/home/cjz/SFTonGFM/reshape/task_embedding.pt')
+        task_embedding = torch.tensor(laod_embedding_dict[data_args.task_type]).float()
+    else:
+        task_embedding = None
+    
     if model_args.graph_tower is not None:
         model_graph_dict = model.get_model().initialize_graph_modules(
             graph_tower=model_args.graph_tower,
@@ -887,6 +902,8 @@ def train():
             pretrain_graph_prompt=model_args.pretrain_graph_prompt,
             pretrain_graph_tower=model_args.pretrain_graph_tower,
             combined_graph_prompt=model_args.combined_graph_prompt,
+            task_related_prompt=model_args.task_related_prompt,
+            task_embedding = task_embedding,
             fsdp=training_args.fsdp
         )
         model.get_graph_tower().to(dtype=torch.float16, device=training_args.device)
@@ -919,8 +936,21 @@ def train():
             for p in model.get_model().graph_tower.parameters():
                 p.requires_grad = True
             model.get_model().graph_tower.to(dtype=compute_dtype, device=training_args.device)
-            
-        if model_args.use_graph_prompt and model_args.combined_graph_prompt:
+        if model_args.use_graph_prompt and model_args.task_related_prompt:
+            for p in model.get_model().task_prompt_linear.parameters():
+                p.requires_grad = True
+            model.get_model().task_prompt_linear.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().alpha_linear.requires_grad = True
+            model.get_model().alpha_linear.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().alpha_weight.requires_grad = True
+            model.get_model().alpha_weight.to(dtype=compute_dtype, device=training_args.device)
+            for p in model.get_model().intrinsic_prompt_linear.parameters():
+                p.requires_grad = True
+            model.get_model().intrinsic_prompt_linear.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().task_prompt_mask.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().intrinsic_prompt_mask.requires_grad = True
+            model.get_model().intrinsic_prompt_mask.to(dtype=compute_dtype, device=training_args.device)
+        elif model_args.use_graph_prompt and model_args.combined_graph_prompt:
             for p in model.get_model().new_prompt_linear.parameters():
                 p.requires_grad = True
             model.get_model().new_prompt_linear.to(dtype=compute_dtype, device=training_args.device)

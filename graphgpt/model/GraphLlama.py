@@ -32,6 +32,7 @@ from torch_geometric.data import Data
 import json
 import os.path as osp
 import glob
+from graphgpt.model.utils import concat_position_encoding
 
 DEFAULT_GRAPH_TOKEN = "<graph>"
 DEFAULT_GRAPH_PATCH_TOKEN = "<g_patch>"
@@ -113,8 +114,17 @@ class GraphLlamaModel(LlamaModel):
         if hasattr(config, "use_graph_proj"):
             self.graph_projector = nn.Linear(config.graph_hidden_size, config.hidden_size)
         
-        if hasattr(config, 'use_graph_prompt'):    
-            if getattr(config, "combined_graph_prompt", True):
+        if hasattr(config, 'use_graph_prompt'):
+            if getattr(config, "task_related_prompt", True):
+                self.task_prompt_linear = nn.Linear(config.graph_hidden_size + 2, config.graph_hidden_size)
+                self.task_prompt_mask = torch.nn.Parameter(torch.Tensor(1, config.graph_hidden_size))
+                self.intrinsic_prompt_linear = nn.Linear(config.graph_hidden_size + 2, config.graph_hidden_size)
+                self.intrinsic_prompt_mask = torch.nn.Parameter(torch.Tensor(1, config.graph_hidden_size))
+                self.alpha_linear = Parameter(torch.tensor(0.5))  
+                self.alpha_weight = Parameter(torch.tensor(0.5))
+                self.task_related_prompt = True
+                    
+            elif getattr(config, "combined_graph_prompt", True):
                 self.new_prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
                 self.new_prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
                 self.frozen_prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
@@ -139,6 +149,10 @@ class GraphLlamaModel(LlamaModel):
         if 'frozen_prompt' in components_to_reset:
             torch.nn.init.xavier_uniform_(self.frozen_prompt_linear.weight)
             torch.nn.init.xavier_uniform_(self.frozen_prompt_weight)
+        if 'task_prompt' in components_to_reset:
+            torch.nn.init.xavier_uniform_(self.task_prompt_linear.weight)
+            torch.nn.init.xavier_uniform_(self.intrinsic_prompt_linear.weight)
+            torch.nn.init.xavier_uniform_(self.intrinsic_prompt_mask)
 
     def get_graph_tower(self):
         graph_tower = getattr(self, 'graph_tower', None)
@@ -148,9 +162,11 @@ class GraphLlamaModel(LlamaModel):
 
     def initialize_graph_modules(self, graph_tower, graph_select_layer,
                                   pretrain_graph_mlp_adapter=None, pretrain_graph_prompt=None,
-                                  pretrain_graph_tower=None, fsdp=None, combined_graph_prompt=False): # TODO: modify this function
+                                  pretrain_graph_tower=None, fsdp=None, combined_graph_prompt=False,
+                                  task_related_prompt=False, task_embedding=None,): # TODO: modify this function
         self.config.graph_tower = graph_tower
         self.combined_graph_prompt = combined_graph_prompt
+        self.task_related_prompt = task_related_prompt
 
 
         if not hasattr(self, 'graph_tower'):
@@ -219,7 +235,35 @@ class GraphLlamaModel(LlamaModel):
             graph_projector_weights = torch.load(pretrain_graph_mlp_adapter, map_location='cpu')
             self.graph_projector.load_state_dict({k.split('.')[-1]: v for k, v in graph_projector_weights.items()})
             
-        if combined_graph_prompt == True and pretrain_graph_prompt is not None:
+        if task_related_prompt == True and pretrain_graph_prompt is None:
+            self.task_prompt_linear = nn.Linear(self.config.graph_hidden_size + 2, self.config.graph_hidden_size)
+            self.task_prompt_mask = task_embedding.to(device='cuda', dtype=torch.float16)
+            self.intrinsic_prompt_linear = nn.Linear(self.config.graph_hidden_size + 2, self.config.graph_hidden_size)
+            self.intrinsic_prompt_mask = torch.nn.Parameter(torch.Tensor(1, self.config.graph_hidden_size))
+            self.alpha_linear = Parameter(torch.tensor(0.5))  
+            self.alpha_weight = Parameter(torch.tensor(0.5))
+            self.reset_parameters(['task_prompt'])
+        
+        elif task_related_prompt == True and pretrain_graph_prompt is not None:
+            prompt_dict = torch.load(pretrain_graph_prompt)
+            print(prompt_dict.keys())
+            self.intrinsic_prompt_linear = nn.Linear(self.config.graph_hidden_size + 2, self.config.graph_hidden_size)
+            ins_prompt_linear_weight = prompt_dict['model.intrinsic_prompt_linear.weight'].half().cuda()
+            ins_prompt_linear_bias = prompt_dict['model.intrinsic_prompt_linear.bias'].half().cuda()
+            self.intrinsic_prompt_linear.weight = Parameter(ins_prompt_linear_weight)
+            self.intrinsic_prompt_linear.bias = Parameter(ins_prompt_linear_bias)
+            self.alpha_linear = Parameter(prompt_dict['model.alpha_linear'])
+            self.alpha_weight = Parameter(prompt_dict['model.alpha_weight'])
+            self.alpha_linear.to(device='cuda', dtype=torch.float16)
+            self.alpha_weight.to(device='cuda', dtype=torch.float16)
+            self.task_prompt_linear = nn.Linear(self.config.graph_hidden_size + 2, self.config.graph_hidden_size)
+            task_prompt_linear_weight = prompt_dict['model.task_prompt_linear.weight'].half().cuda()
+            task_prompt_linear_bias = prompt_dict['model.task_prompt_linear.bias'].half().cuda()
+            self.task_prompt_linear.weight = Parameter(task_prompt_linear_weight)
+            self.task_prompt_linear.bias = Parameter(task_prompt_linear_bias)
+            self.task_prompt_mask = nn.Parameter(task_embedding.to(device='cuda', dtype=torch.float16))
+            
+        elif combined_graph_prompt == True and pretrain_graph_prompt is not None:
             # 1. 重新初始化模块
             self.new_prompt_linear = nn.Linear(self.config.graph_hidden_size, self.config.graph_hidden_size)
             self.new_prompt_weight = torch.nn.Parameter(torch.Tensor(500, self.config.graph_hidden_size))
@@ -303,7 +347,12 @@ class GraphLlamaModel(LlamaModel):
                         # print(g)
                         node_forward_out = graph_tower(g)
                         node_count = node_forward_out.size(0)
-                        if hasattr(self, 'combined_graph_prompt') and self.combined_graph_prompt is False: 
+                        if hasattr(self, 'task_related_prompt') and self.task_related_prompt is True:
+                            node_forward_out = concat_position_encoding(g, node_forward_out)                        
+                            node_forward_out = self.alpha_linear * self.task_prompt_linear(node_forward_out) + (1 - self.alpha_linear) * self.intrinsic_prompt_linear(node_forward_out)
+                            combined_weight = self.alpha_weight * self.task_prompt_mask + (1 - self.alpha_weight) * self.intrinsic_prompt_mask
+                            node_forward_out = node_forward_out * combined_weight
+                        elif hasattr(self, 'combined_graph_prompt') and self.combined_graph_prompt is False: 
                             # self.prompt_linear.half()
                             node_forward_out = self.prompt_linear(node_forward_out)
                             current_weight = self.prompt_weight[:node_count, :]

@@ -14,7 +14,7 @@ import copy
 import numpy as np
 import faiss
 from torch.nn.parameter import Parameter
-import time
+import datetime
 
 import os
 import requests
@@ -106,6 +106,18 @@ categories = [
     "programming, object oriented",
     "programming, semantics",
     "programming, software development"
+]
+wiki_categories = [
+    'distributed computing architecture', 
+    'operating systems', 
+    'databases', 
+    'computer security', 
+    'internet protocols', 
+    'programming language topics', 
+    'computational linguistics', 
+    'computer architecture', 
+    'computer file systems', 
+    'web technology',
 ]
 
 def find_common_categories(output, label, categories):
@@ -416,14 +428,23 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         graph_data.graph_node = graph_data.graph_node.to(torch.float16)
         # graph_data.edge_index = graph_data.edge_index.to(torch.float16)
         graph_data_list.append(graph_data.cuda())
-        with torch.inference_mode():
-            output_ids = model.generate(
-                input_ids,
-                graph_data=graph_data_list,
-                do_sample=True,
-                temperature=0.2,
-                max_new_tokens=1024,
-                stopping_criteria=[stopping_criteria])
+        
+        try:
+            with torch.inference_mode():
+                output_ids = model.generate(
+                    input_ids,
+                    graph_data=graph_data.cuda(),
+                    do_sample=True,
+                    temperature=0.2,
+                    max_new_tokens=1024,
+                    stopping_criteria=[stopping_criteria])
+        except RuntimeError as e:
+            if "probability tensor contains either `inf`, `nan` or element < 0" in str(e):
+                print(f"Skipping data due to error: {e}")
+                continue
+            else:
+                raise e
+            
         input_token_len = input_ids.shape[1]
         n_diff_input_output = (input_ids != output_ids[:, :input_token_len]).sum().item()
         if n_diff_input_output > 0:
@@ -434,7 +455,7 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
             outputs = outputs[:-len(stop_str)]
         outputs = outputs.strip()
         # print(outputs)
-        common, res, label, almost_common = find_common_categories(outputs, instruct_item['conversations'][1]['value'], categories)
+        common, res, label, almost_common = find_common_categories(outputs, instruct_item['conversations'][1]['value'], wiki_categories)
         
         if len(common) > 0:
             correct += 1
@@ -452,7 +473,8 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         'almost_correct': almost_correct,
     }
     res_data.insert(0, lead_dict)
-    with open(osp.join(args.output_res_path, 'arxiv_test_res_20240402_01.json'.format(start_idx, end_idx)), "w") as fout:
+    current_datetime = datetime.datetime.now()
+    with open(osp.join(args.output_res_path, 'cora_tit_gen_{}_{}.json'.format(len(prompt_file), current_datetime)), "w") as fout:
         json.dump(res_data, fout, indent=4)
     return res_data
     # with open(args.output_res_path, "w") as fout:
