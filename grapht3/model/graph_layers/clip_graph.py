@@ -6,13 +6,13 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 from typing import Any, Union, List
-from graphgpt.model.graph_layers.simple_tokenizer import SimpleTokenizer as _Tokenizer
+from grapht3.model.graph_layers.simple_tokenizer import SimpleTokenizer as _Tokenizer
 from torch_geometric.nn.conv import MessagePassing
 from torch_scatter import scatter_add
 from torch_geometric.utils import add_remaining_self_loops
 from torch.nn import Parameter
 from torch import nn, optim
-from graphgpt.model.graph_layers.graph_transformer import graph_transformer
+from grapht3.model.graph_layers.graph_transformer import graph_transformer
 from transformers.configuration_utils import PretrainedConfig
 
 _tokenizer = _Tokenizer()

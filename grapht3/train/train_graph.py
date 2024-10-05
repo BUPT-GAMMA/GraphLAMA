@@ -26,10 +26,10 @@ import torch
 
 import transformers
 from torch.utils.data import Dataset
-from graphgpt.train.graphchat_trainer import GraphChatTrainer
+from grapht3.train.graphchat_trainer import GraphChatTrainer
 
-from graphgpt import conversation as conversation_lib
-from graphgpt.model import *
+from grapht3 import conversation as conversation_lib
+from grapht3.model import *
 
 from PIL import Image
 import torch.nn as nn

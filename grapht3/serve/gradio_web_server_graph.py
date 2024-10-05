@@ -7,10 +7,10 @@ import time
 import gradio as gr
 import requests
 
-from graphgpt.conversation import (default_conversation, conv_templates,
+from grapht3.conversation import (default_conversation, conv_templates,
                                    SeparatorStyle)
-from graphgpt.constants import LOGDIR
-from graphgpt.utils import (build_logger, server_error_msg,
+from grapht3.constants import LOGDIR
+from grapht3.utils import (build_logger, server_error_msg,
     violates_moderation, moderation_msg)
 import hashlib
 

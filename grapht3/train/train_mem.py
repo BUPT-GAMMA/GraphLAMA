@@ -9,7 +9,7 @@
 import sys
 sys.path.append("/home/cjz/SFTonGFM")
 
-from graphgpt.train.train_graph import train
+from grapht3.train.train_graph import train
 
 if __name__ == "__main__":
     train()

@@ -15,12 +15,12 @@ import torch
 import uvicorn
 from functools import partial
 
-from graphgpt.constants import WORKER_HEART_BEAT_INTERVAL
-from graphgpt.utils import (build_logger, server_error_msg,
+from grapht3.constants import WORKER_HEART_BEAT_INTERVAL
+from grapht3.utils import (build_logger, server_error_msg,
     pretty_print_semaphore)
-from graphgpt.model.builder import load_pretrained_model
-from graphgpt.mm_utils import process_images, load_image_from_base64, tokenizer_image_token, KeywordsStoppingCriteria
-from graphgpt.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
+from grapht3.model.builder import load_pretrained_model
+from grapht3.mm_utils import process_images, load_image_from_base64, tokenizer_image_token, KeywordsStoppingCriteria
+from grapht3.constants import IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from transformers import TextIteratorStreamer
 from threading import Thread
 

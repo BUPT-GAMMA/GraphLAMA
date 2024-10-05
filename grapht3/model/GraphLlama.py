@@ -27,12 +27,12 @@ from transformers import AutoConfig, AutoModelForCausalLM, \
 
 from transformers.modeling_outputs import BaseModelOutputWithPast, CausalLMOutputWithPast
 
-from graphgpt.model.graph_layers import MPNN, GNN, CLIP, graph_transformer
+from grapht3.model.graph_layers import MPNN, GNN, CLIP, graph_transformer
 from torch_geometric.data import Data
 import json
 import os.path as osp
 import glob
-from graphgpt.model.utils import concat_position_encoding
+from grapht3.model.utils import concat_position_encoding
 
 DEFAULT_GRAPH_TOKEN = "<graph>"
 DEFAULT_GRAPH_PATCH_TOKEN = "<g_patch>"

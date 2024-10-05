@@ -2,11 +2,11 @@ import argparse
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import os
-from graphgpt.conversation import conv_templates, SeparatorStyle
-from graphgpt.utils import disable_torch_init
+from grapht3.conversation import conv_templates, SeparatorStyle
+from grapht3.utils import disable_torch_init
 from transformers import CLIPVisionModel, CLIPImageProcessor, StoppingCriteria
-from graphgpt.model import *
-from graphgpt.model.utils import KeywordsStoppingCriteria
+from grapht3.model import *
+from grapht3.model.utils import KeywordsStoppingCriteria
 from torch_geometric.data import Data
 import json
 import copy

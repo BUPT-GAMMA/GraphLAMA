@@ -18,8 +18,8 @@ import numpy as np
 import requests
 import uvicorn
 
-from graphgpt.constants import CONTROLLER_HEART_BEAT_EXPIRATION
-from graphgpt.utils import build_logger, server_error_msg
+from grapht3.constants import CONTROLLER_HEART_BEAT_EXPIRATION
+from grapht3.utils import build_logger, server_error_msg
 
 
 logger = build_logger("controller", "controller.log")

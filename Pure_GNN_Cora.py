@@ -1,4 +1,4 @@
-from graphgpt.model import *
+from grapht3.model import *
 import json
 import torch
 import os
