@@ -78,9 +78,9 @@ class DataArguments:
     graph_content: Optional[str] = field(default=None)
     graph_data_path: Optional[str] = field(default=None)
     image_aspect_ratio: str = 'square'
-    task_text_path: Optional[str] = field(default=None)
+    task_embedding_path: Optional[str] = field(default=None)
     task_type: Optional[str] = field(default=None)
-
+    few_shot_adp: bool = False
 
 @dataclass
 class TrainingArguments(transformers.TrainingArguments):
@@ -889,8 +889,8 @@ def train():
         # transformer = random_projection.GaussianRandomProjection(n_components=128, random_state=42)
         # task_embedding = transformer.fit_transform(task_embedding)
         # task_embedding = torch.tensor(task_embedding).float()
-        laod_embedding_dict = torch.load('/home/cjz/SFTonGFM/reshape/task_embedding.pt')
-        task_embedding = torch.tensor(laod_embedding_dict[data_args.task_type]).float()
+        load_embedding_dict = torch.load(data_args.task_embedding_path)
+        task_embedding = torch.tensor(load_embedding_dict[data_args.task_type]).float()
     else:
         task_embedding = None
     
@@ -940,16 +940,19 @@ def train():
             for p in model.get_model().task_prompt_linear.parameters():
                 p.requires_grad = True
             model.get_model().task_prompt_linear.to(dtype=compute_dtype, device=training_args.device)
-            model.get_model().alpha_linear.requires_grad = True
-            model.get_model().alpha_linear.to(dtype=compute_dtype, device=training_args.device)
-            model.get_model().alpha_weight.requires_grad = True
+            model.get_model().alpha_linear.to(dtype=compute_dtype, device=training_args.device)         
             model.get_model().alpha_weight.to(dtype=compute_dtype, device=training_args.device)
-            for p in model.get_model().intrinsic_prompt_linear.parameters():
-                p.requires_grad = True
             model.get_model().intrinsic_prompt_linear.to(dtype=compute_dtype, device=training_args.device)
             model.get_model().task_prompt_mask.to(dtype=compute_dtype, device=training_args.device)
-            model.get_model().intrinsic_prompt_mask.requires_grad = True
             model.get_model().intrinsic_prompt_mask.to(dtype=compute_dtype, device=training_args.device)
+            model.get_model().alpha_linear.requires_grad = True
+            model.get_model().alpha_weight.requires_grad = True
+            model.get_model().intrinsic_prompt_mask.requires_grad = True
+            if not data_args.few_shot_adp: # If pretraining
+                for p in model.get_model().intrinsic_prompt_linear.parameters():
+                    p.requires_grad = True
+                # model.get_model().intrinsic_prompt_mask.requires_grad = True
+            
         elif model_args.use_graph_prompt and model_args.combined_graph_prompt:
             for p in model.get_model().new_prompt_linear.parameters():
                 p.requires_grad = True

@@ -119,6 +119,52 @@ wiki_categories = [
     'computer file systems', 
     'web technology',
 ]
+products_categories = [
+    'home & kitchen', # 2721 - 161
+    'health & personal Care', # 3994 - 306
+    'beauty', # 3718 - 75
+    'sports & outdoors', # 4605 - 116
+    'books', # 10956 - 900
+    'patio, lawn & garden', # 649 - 40
+    'toys & games', # 3441 - 100
+    'cds & vinyl', # 2682 - 1660
+    'cell phones & accessories', # 3019 - 163
+    'grocery & gourmet Food', # 455 - 41
+    'arts, crafts & sewing', # 1451 - 22
+    'clothing, shoes & jewelry', # 282 - 4
+    'electronics', # 3338 - 459
+    'movies & tv', # 1554 - 1058
+    'software', # 25 - 23
+    'video games', # 1429 - 1408
+    'automotive', # 1010 - 107
+    'pet supplies', # 2730 - 264
+    'office products', # 1609 - 126
+    'Industrial & Scientific', # 430 - 72
+    'Musical Instruments', # 114 - 21
+    'Tools & Home Improvement', # 1914 - 147
+    'Magazine Subscriptions', # 5 - 5
+    'Baby Products', # 127 - 28
+    'NAN', # 781 - 774
+    'Appliances', # 53 - 18
+    'Kitchen & Dining', # 7 - 1
+    'Collectibles & Fine Art', # 2
+    'All Beauty', # 44
+    'Luxury Beauty',
+    'Amazon Fashion', # 2
+    'Computers', # 12 - 2
+    'All Electronics', # 13 - 2
+    'Purchase Circles',
+    'MP3 Players & Accessories', # 3
+    'Gift Cards', # 3 - 3
+    'Office & School Supplies', # 17
+    'Home Improvement', # 14 - 2
+    'Camera & Photo', # 2
+    'GPS & Navigation', # 2
+    'Digital Music', # 1
+    'Car Electronics', # 2
+    'Baby', # 807 - 61
+    'Kindle Store', # 1 - 1
+]
 
 def find_common_categories(output, label, categories):
     # 转换为小写以进行不区分大小写的匹配
@@ -133,14 +179,12 @@ def find_common_categories(output, label, categories):
     common_categories = set(output_categories).intersection(label_categories)
     
     almost_common = []
-    # 分割字符串并去除最后一个词
-    for output_category in output_categories:
-        parts1 = output_category.rsplit(',', 1)[0]
-        for label_category in label_categories:
-            parts2 = label_category.rsplit(',', 1)[0]
-            if parts1 == parts2:
-                almost_common.append(parts1)
-
+    if not common_categories:
+        first_word = output.split(' ')[0]
+        first_label = label.split(' ')[0]
+        if first_word == first_label:
+            almost_common.append(first_word)
+    
     return common_categories, output_categories, label_categories, almost_common
 
 def load_graph(instruct_item, graph_data_path): 
@@ -265,7 +309,8 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
     print('finish loading')
 
     print('start loading')
-    model = GraphLlamaForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float16, use_cache=True, low_cpu_mem_usage=True).cuda()
+    # model = GraphLlamaForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float16, use_cache=True, low_cpu_mem_usage=True).cuda()
+    model = GraphLlamaForCausalLM.from_pretrained(args.model_name, torch_dtype=torch.float16, use_cache=True, low_cpu_mem_usage=True)
     print('finish loading')
 
     use_graph_start_end = getattr(model.config, "use_graph_start_end", False)
@@ -274,11 +319,29 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         tokenizer.add_tokens([DEFAULT_G_START_TOKEN, DEFAULT_G_END_TOKEN], special_tokens=True)
         
     if args.task_related_prompt == True:
-        task_embedding = torch.load('/home/cjz/GraphGPT/reshape/task_embedding.pt')[args.task_type]
+        print('Loading task related prompt')
+        load_embedding_dict = torch.load(args.task_embedding_path)
+        task_embedding = torch.tensor(load_embedding_dict[args.task_type]).float()
         prompt_dict = torch.load(os.path.join(args.tuned_graph_prompt, "combined_graph_prompt.bin")) 
-        
+        print(prompt_dict.keys())
+        model.get_model().intrinsic_prompt_linear = torch.nn.Linear(128 + 2, 128)
+        ins_prompt_linear_weight = prompt_dict['model.intrinsic_prompt_linear.weight'].half().cuda()
+        ins_prompt_linear_bias = prompt_dict['model.intrinsic_prompt_linear.bias'].half().cuda()
+        model.get_model().intrinsic_prompt_linear.weight = Parameter(ins_prompt_linear_weight)
+        model.get_model().intrinsic_prompt_linear.bias = Parameter(ins_prompt_linear_bias)
+        model.get_model().alpha_linear = Parameter(prompt_dict['model.alpha_linear'])
+        model.get_model().alpha_weight = Parameter(prompt_dict['model.alpha_weight'])
+        model.get_model().alpha_linear.to(device='cuda', dtype=torch.float16)
+        model.get_model().alpha_weight.to(device='cuda', dtype=torch.float16)
+        model.get_model().task_prompt_linear = torch.nn.Linear(128 + 2, 128)
+        task_prompt_linear_weight = prompt_dict['model.task_prompt_linear.weight'].half().cuda()
+        task_prompt_linear_bias = prompt_dict['model.task_prompt_linear.bias'].half().cuda()
+        model.get_model().task_prompt_linear.weight = Parameter(task_prompt_linear_weight)
+        model.get_model().task_prompt_linear.bias = Parameter(task_prompt_linear_bias)
+        model.get_model().task_prompt_mask = torch.nn.Parameter(task_embedding.to(device='cuda', dtype=torch.float16))
     
-    if args.combined_graph_prompt == True:
+    elif args.combined_graph_prompt == True:
+        print('Loading combined graph prompt')
         prompt_dict = torch.load(os.path.join(args.tuned_graph_prompt, "combined_graph_prompt.bin")) 
         
         new_linear_dict = {
@@ -323,7 +386,7 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         prompt_linear =  prompt_linear.half()
         model.get_model().prompt_linear = prompt_linear.cuda()
         
-
+    model.cuda()
     # print(model)
     # graph_tower = model.get_model().graph_tower
     
@@ -364,7 +427,7 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
         replace_token = DEFAULT_GRAPH_PATCH_TOKEN * graph_token_len
         replace_token = DEFAULT_G_START_TOKEN + replace_token + DEFAULT_G_END_TOKEN
         qs = qs.replace(DEFAULT_GRAPH_TOKEN, replace_token)
-        
+        qs = qs.replace("Directly give the full name of the most likely category of this paper.", "Analyzing from the perspective of the relationship between neighbor nodes and the target node, and providing an explanation.")
         
 
         # if "v1" in args.model_name.lower():
@@ -422,7 +485,13 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
             outputs = outputs[:-len(stop_str)]
         outputs = outputs.strip()
         # print(outputs)
-        common, res, label, almost_common = find_common_categories(outputs, instruct_item['conversations'][1]['value'], wiki_categories)
+        if 'cora' in args.task_type:
+            label_category = cora_categories
+        elif 'wiki' in args.task_type:
+            label_category = wiki_categories
+        elif 'products' in args.task_type:
+            label_category = products_categories
+        common, res, label, almost_common = find_common_categories(outputs, instruct_item['conversations'][1]['value'], label_category)
         
         if len(common) > 0:
             correct += 1
@@ -433,15 +502,22 @@ def eval_model(args, prompt_file, start_idx, end_idx, graph_tower, train_embeddi
                          'label': label, 'common': list(common), 'almost common': almost_common}.copy())
         # with open(osp.join(args.output_res_path, 'arxiv_test_res_{}_{}_with_prompt.json'.format(start_idx, end_idx)), "w") as fout:
         #     json.dump(res_data, fout, indent=4)
-    print('acc = ', correct/len(prompt_file))
-    print('almost correct answer: ', almost_correct)
-    lead_dict = {
-        'acc': correct/len(prompt_file),
-        'almost_correct': almost_correct,
-    }
+    if 'products' in args.task_type:
+        print('acc = ', (correct + almost_correct)/len(prompt_file))
+        lead_dict = {
+            'acc': (correct + almost_correct)/len(prompt_file),
+            'almost_correct': almost_correct,
+        }
+    else:
+        print('acc = ', correct/len(prompt_file))
+        print('almost correct answer: ', almost_correct)
+        lead_dict = {
+            'acc': correct/len(prompt_file),
+            'almost_correct': almost_correct,
+        }
     res_data.insert(0, lead_dict)
     current_datetime = datetime.datetime.now()
-    with open(osp.join(args.output_res_path, 'cora_tit_gen_{}_{}.json'.format(len(prompt_file), current_datetime)), "w") as fout:
+    with open(osp.join(args.output_res_path, '{}_{}_{}.json'.format(args.task_type, len(prompt_file), current_datetime)), "w") as fout:
         json.dump(res_data, fout, indent=4)
     return res_data
     # with open(args.output_res_path, "w") as fout:
@@ -471,6 +547,7 @@ if __name__ == "__main__":
     parser.add_argument("--combined_graph_prompt", type=bool, default=False)
     parser.add_argument("--task_related_prompt", type=bool, default=False)
     parser.add_argument("--task_type", type=str, default='cora_21ways')
+    parser.add_argument("--task_embedding_path", type=str, default=None)
 
     args = parser.parse_args()
 

@@ -70,7 +70,7 @@ def load_model_pretrained(model_name, pretrain_model_path):
     return model, args
 def transfer_param_tograph(clip_graph, gnn):
     
-    print(clip_graph)
+    # print(clip_graph)
     gnn_state_dict = clip_graph.gnn.state_dict()
     gnn.load_state_dict(gnn_state_dict)
     return gnn
@@ -116,6 +116,7 @@ class GraphLlamaModel(LlamaModel):
         
         if hasattr(config, 'use_graph_prompt'):
             if getattr(config, "task_related_prompt", True):
+                print('Using task_related prompt')
                 self.task_prompt_linear = nn.Linear(config.graph_hidden_size + 2, config.graph_hidden_size)
                 self.task_prompt_mask = torch.nn.Parameter(torch.Tensor(1, config.graph_hidden_size))
                 self.intrinsic_prompt_linear = nn.Linear(config.graph_hidden_size + 2, config.graph_hidden_size)
@@ -125,6 +126,7 @@ class GraphLlamaModel(LlamaModel):
                 self.task_related_prompt = True
                     
             elif getattr(config, "combined_graph_prompt", True):
+                print('Using combined_graph prompt')
                 self.new_prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
                 self.new_prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
                 self.frozen_prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
@@ -135,6 +137,7 @@ class GraphLlamaModel(LlamaModel):
                 
             
             elif getattr(config, "use_graph_prompt", True):
+                print('Using single graph prompt.')
                 self.prompt_linear = nn.Linear(config.graph_hidden_size, config.graph_hidden_size)
                 self.prompt_weight = torch.nn.Parameter(torch.Tensor(500, config.graph_hidden_size))
                 self.reset_parameters(['prompt'])
