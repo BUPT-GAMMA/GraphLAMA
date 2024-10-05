@@ -1,6 +1,6 @@
 # Enable Self-supervised Fine-tuning on GFM
 
-# <center><img src="images/framework.jpg" style="width: %"> </center>
+# <center><img src="images/framework.jpg" style="width: 80%"> </center>
 
 
 ### 1. Environment Preparation
@@ -45,4 +45,4 @@ sh ./scripts/tune_script/SFTonGFM_eval.sh
 ```
 
 ### 6. Note
-Our code is based on the GraphGPT framework https://github.com/HKUDS/GraphGPT, we thank them for their excellent work.
+ Our code is based on the GraphGPT framework https://github.com/HKUDS/GraphGPT, but have made significant modifications to the model, training process, and data, as shown in the framework figure we provided. We appreciate GraphGPT's outstanding work
