@@ -85,19 +85,5 @@ sh ./scripts/tune_script/SFTonGFM_eval.sh
 - Venue: KDD 2025
 - Preprint: [arXiv:2506.21559](https://arxiv.org/pdf/2506.21559)
 
-### 8. Citation
-If you find this repository useful, please cite our paper (BibTeX coming soon):
-```
-@inproceedings{graphlama_kdd2025,
-  title     = {GraphLAMA: Enabling Efficient Adaptation of Graph Language Models with Limited Annotations},
-  author    = {To be updated},
-  booktitle = {Proceedings of the ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD)},
-  year      = {2025}
-}
-```
-
-### 9. Acknowledgements
+### 8. Acknowledgements
 This work builds upon open-source efforts, including the GraphGPT framework: https://github.com/HKUDS/GraphGPT. We thank the authors and community for their contributions.
-
-### 10. License
-This project is released under the license specified in `LICENSE`.
