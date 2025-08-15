@@ -46,12 +46,46 @@ cd path/to/grapht3
 sh ./scripts/tune_script/SFTonGFM_eval.sh
 ```
 
-### 6. Paper
+### 6. Code Structure
+```
+.
+├─ grapht3/                 # Core GraphLAMA package
+│  ├─ model/                # Model registry and graph layers
+│  │  └─ graph_layers/      # GNN modules, tokenizer, CLIP-graph
+│  ├─ train/                # Training entry points and trainers
+│  ├─ serve/                # Serving and web UI (FastChat-style)
+│  ├─ eval/                 # Evaluation utilities
+│  ├─ protocol/             # API protocol definitions
+│  ├─ conversation.py
+│  ├─ constants.py
+│  └─ utils.py
+├─ scripts/                 # Shell scripts for training/eval/serving
+│  ├─ tune_script/          # Stage1/2, SFT training/eval scripts
+│  ├─ eval_script/
+│  └─ serving/
+├─ text-graph-grounding/    # Graph-text grounding components and data utils
+│  ├─ data/
+│  ├─ graph_transformer.py
+│  ├─ model_gt.py
+│  └─ main_train.py
+├─ reshape_wikics/          # Data reshaping for WikiCS
+├─ reshape_products/        # Data reshaping for OGBN-Products
+├─ data/                    # Example dataset (e.g., cora)
+├─ tests/                   # Tests
+├─ playground/              # Playground experiments
+├─ output_eva_cora/         # Example outputs
+├─ Pure_GNN_Cora.py         # GNN baseline example
+├─ task_embedding_generate.py
+├─ requirements.txt
+└─ README.md
+```
+
+### 7. Paper
 - Title: GraphLAMA: Enabling Efficient Adaptation of Graph Language Models with Limited Annotations
 - Venue: KDD 2025
-- Preprint: coming soon
+- Preprint: [arXiv:2506.21559](https://arxiv.org/pdf/2506.21559)
 
-### 7. Citation
+### 8. Citation
 If you find this repository useful, please cite our paper (BibTeX coming soon):
 ```
 @inproceedings{graphlama_kdd2025,
@@ -62,8 +96,8 @@ If you find this repository useful, please cite our paper (BibTeX coming soon):
 }
 ```
 
-### 8. Acknowledgements
+### 9. Acknowledgements
 This work builds upon open-source efforts, including the GraphGPT framework: https://github.com/HKUDS/GraphGPT. We thank the authors and community for their contributions.
 
-### 9. License
+### 10. License
 This project is released under the license specified in `LICENSE`.
